@@ -11,6 +11,8 @@ import Alert from "react-s-alert";
 
 import "react-s-alert/dist/s-alert-default.css";
 import "react-s-alert/dist/s-alert-css-effects/slide.css";
+import CalendarPage from "./components/CalendarPage";
+import EventPage from "./components/EventPage";
 
 const App: React.FC = () => {
   document.title = process.env.REACT_APP_NAME || "";
@@ -22,7 +24,10 @@ const App: React.FC = () => {
             <AppHeader />
             <Switch>
               <Route exact path="/login/auth" component={LoginCallback} />
-              <Route path="/" component={LandingPage} />
+              <Route path="/event/:eid/:token" component={EventPage} />
+              <Route path="/event/:eid" component={EventPage} />
+              <Route path="/login" component={LandingPage} />
+              <Route path="/" component={CalendarPage} />
             </Switch>
           </div>
         </CookiesProvider>

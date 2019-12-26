@@ -23,6 +23,10 @@
     "REACT_APP_SITEURL": {
       "description": "URL of site (usually https://[appname].herokuapp.com) YOU NEED https or http",
       "value": "https://[appname].herokuapp.com"
+    },
+    "SERVER_API_KEY": {
+      "description": "Secret key for server API Calls",
+      "value": "SECRETKEY"
     }
   }
 }

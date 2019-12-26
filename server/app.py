@@ -16,6 +16,9 @@ if "DATABASE_URL" in os.environ:
 
 if "REACT_APP_SITEURL" in os.environ:
     app.config["REACT_APP_SITEURL"] = os.environ["REACT_APP_SITEURL"]
+
+if "SERVER_API_KEY" in os.environ:
+    app.config["SERVER_API_KEY"] = os.environ["SERVER_API_KEY"]
     
 # Database
 db = SQLAlchemy(app)

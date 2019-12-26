@@ -1,5 +1,9 @@
 export enum ServerURL {
-  login = "/api/v1/client/login"
+  login = "/api/v1/client/login",
+  getEvents = "/api/v1/events",
+  getEvent = "/api/v1/events/event",
+  publishEvent = "/api/v1/events/publish",
+  approveEvent = "/api/v1/events/approve",
 }
 
 const ServerHelper = {

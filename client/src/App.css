@@ -31,3 +31,7 @@
     transform: rotate(360deg);
   }
 }
+
+.App .calendar {
+  height: 500px;
+}
