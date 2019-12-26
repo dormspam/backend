@@ -1,29 +1,50 @@
 import email
-from server.emails.parse_dates import parse_dates
-from server.emails.parse_urls import parse_urls
-from server.emails.parse_type import parse_type
-from server.controllers.events import create_server_event
+if __name__ == "__main__":
+    from parse_dates import parse_dates
+    from parse_urls import parse_urls
+    from parse_type import parse_type
+    def  create_server_event (title, etype, descrition, time_start, time_end=None, link=None, headerInfo=None):
+        print(title)
+        print(etype)
+        print(descrition)
+        print(time_start)
+        print(time_end)
+else:
+    from server.emails.parse_dates import parse_dates
+    from server.emails.parse_urls import parse_urls
+    from server.emails.parse_type import parse_type
+    from server.controllers.events import create_server_event
+
 import re
 
 
-def remove_tags(text):
-    TAG_RE = re.compile(r'<[^>]+>')
-    return TAG_RE.sub('', text)
+def remove_forwards(text):
+    if "-----" in text and "From:" in text and "Subject:" in text:
+        # Forwarded message
+        texts = re.split(r'\r?\n\r?\n', text, 1, re.I)
+        return texts[1]
+    return text
 
 
 def parse_email(email_text):
     b = email.message_from_string(email_text)
-    message_body = b""
-    if b.is_multipart():
-        for payload in b.get_payload():
-            # if payload.is_multipart(): ...
-            message_body += payload.get_payload(decode=True)
-            break
-            # TODO(kevinfang): only looking at first MIME part
-    else:
-        message_body += (b.get_payload(decode=True))
+    def find_plain_txt(p):
+        message_body = b""
+        if p.is_multipart():
+            for payload in p.get_payload():
+                if (payload.is_multipart()):
+                    message_body += find_plain_txt(payload)
+                else:
+                    if (payload.get_content_type() == "text/plain"):
+                        message_body += payload.get_payload(decode=True)
 
-    message_clean = remove_tags(message_body.decode("utf-8"))
+        else:
+            if (p.get_content_type() == "text/plain"):
+                message_body += p.get_payload(decode=True)
+        return message_body
+    
+    message_body = find_plain_txt(b)
+    message_clean = remove_forwards(message_body.decode("utf-8"))
 
     title = b.get("subject")
     dates = parse_dates(message_clean)
@@ -42,10 +63,14 @@ def parse_email(email_text):
     if etype > 0:
         return create_server_event(title,
                         etype,
-                        message_body.decode("utf-8"),
+                        message_clean,
                         date_start,
                         time_end=date_end,
                         link=urls,
                         headerInfo=header
                         )
     return None
+
+if __name__ == "__main__":
+    f = open("test_email","r")
+    parse_email(f.read())

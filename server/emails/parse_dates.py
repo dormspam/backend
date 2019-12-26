@@ -58,7 +58,7 @@ def parse_dates(text):
 
 def parse_dates_possibilities(text):
     text = expand_event_time(text.upper())
-    matches = search_dates(text)
+    matches = search_dates(text, languages=['en'])
     return matches
 
 
