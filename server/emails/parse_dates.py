@@ -22,15 +22,19 @@ def expand_event_time(text):
     text = re.sub(r'(10|11|12|[1-9])\s*(?:to)\s*(10|11|12|[1-9])\s*([ap][m])',
                   r'\1\3 - \2\3', text, flags=re.IGNORECASE)
     # 1-3 pm
-    text = re.sub(r'(10|11|12|[1-9])\s*-\s*(10|11|12|[1-9])\s*([ap][m])',
+    text = re.sub(r'((?:10|11|12|[1-9])(?:\:[0-9]{2})?)\s*-\s*((?:10|11|12|[1-9])(?:\:[0-9]{2})?)\s*([ap][m])',
                   r'\1\3 - \2\3', text, flags=re.IGNORECASE)
+
+    # 1pm-2pm
+    text = re.sub(r'((?:10|11|12|[1-9])(?:\:[0-9]{2})?)\s*([ap][m])\s*-\s*((?:10|11|12|[1-9])(?:\:[0-9]{2})?)\s*([ap][m])',
+                  r'\1\2 - \3\4', text, flags=re.IGNORECASE)
 
     # merge ams and pms spaces
     text = re.sub(
-        r'(10|11|12|[0-9](:[0-9]{2})?)\s+([ap]m)', r'\1\3', text, flags=re.I)
+        r'((?:10|11|12|[1-9])(?:\:[0-9]{2})?)\s+([ap]m)', r'\1\2', text, flags=re.I)
 
     # Add minutes
-    text = re.sub(r'(10|11|12|[0-9])([ap]m)', r'\1:00\2', text, flags=re.I)
+    text = re.sub(r'(10|11|12|[1-9])([ap]m)', r'\1:00\2', text, flags=re.I)
 
     return text
 

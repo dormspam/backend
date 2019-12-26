@@ -6,7 +6,7 @@ if __name__ == "__main__":
     def  create_server_event (title, etype, descrition, time_start, time_end=None, link=None, headerInfo=None):
         print(title)
         print(etype)
-        print(descrition)
+        # print(descrition)
         print(time_start)
         print(time_end)
 else:
@@ -47,11 +47,10 @@ def parse_email(email_text):
     message_clean = remove_forwards(message_body.decode("utf-8"))
 
     title = b.get("subject").replace("Fwd: ","").replace("Re: ","")
-    dates = parse_dates(message_clean)
+    dates = parse_dates(title + "\n" + message_clean)
     urls = parse_urls(message_clean)
     etype = parse_type(message_clean)
     header = b.get("from") + "|" + b.get("date")
-
     if dates:
         date_start = dates[0]
     else:
