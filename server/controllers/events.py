@@ -59,6 +59,6 @@ def approve_event(eid):
     event = get_event(eid, None, override=True)
     if event is None:
         return False
-    event.approved_is = True
+    event.approved_is = not event.approved_is
     db.session.commit()
     return True

@@ -1,6 +1,7 @@
 from dateparser.search import search_dates
 import re
 import calendar
+import datetime
 
 
 def expand_event_time(text):
@@ -57,7 +58,9 @@ def parse_dates(text):
 
 
 def parse_dates_possibilities(text):
+    now = datetime.datetime.now()
     text = expand_event_time(text.upper())
+    text = text.replace("THIS", "THIS " + str(now.year), -1)
     matches = search_dates(text, languages=['en'])
     return matches
 

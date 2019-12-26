@@ -114,6 +114,7 @@ export type Event = {
   type: number;
   desc: string;
   link: string;
+  approved: string;
 };
 
 const CalendarPage = () => {

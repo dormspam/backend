@@ -46,7 +46,7 @@ def parse_email(email_text):
     message_body = find_plain_txt(b)
     message_clean = remove_forwards(message_body.decode("utf-8"))
 
-    title = b.get("subject")
+    title = b.get("subject").replace("Fwd: ","").replace("Re: ","")
     dates = parse_dates(message_clean)
     urls = parse_urls(message_clean)
     etype = parse_type(message_clean)

@@ -44,11 +44,11 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
           eid: props.match.params.eid
         });
         if (res.success) {
-          alert("successful");
+          alert(res.message);
         }
       }
       } color="primary">
-        Approve
+        {event.approved ? "Unapprove" : "Approve"}
       </Button>
       <h1>Event Title: {event.title}</h1>
       <h4>{event.start.toDateString()} @ {event.start.toLocaleTimeString()}</h4>

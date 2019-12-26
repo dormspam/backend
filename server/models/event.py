@@ -68,5 +68,6 @@ class Event(Base):
             'end': self.time_end.isoformat(), # TODO(kevinfang): ISO UTC
             'type': self.etype,
             'eid': self.eid,
-            'link': self.cta_link
+            'link': self.cta_link,
+            'approved': self.approved_is
         }
