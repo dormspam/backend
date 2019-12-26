@@ -23,8 +23,11 @@ class ServerCreateEvent(Resource):
         data = SERVER_CREATE_PARSER.parse_args()
         if data["api_key"] != app.config["SERVER_API_KEY"]:
             return return_failure("api key incorrect")
-        parse_email(data["email"])
-        return return_success({"message":"created event"})
+        event = parse_email(data["email"])
+        if (event is not None):
+            return return_success({'event': event.json()})
+        else:
+            return return_failure("could not parse email")
 
 
 PUBLISH_EVENT = reqparse.RequestParser(bundle_errors=True)
