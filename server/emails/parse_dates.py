@@ -65,9 +65,8 @@ def parse_dates_possibilities(text):
     now = datetime.datetime.now()
     text = expand_event_time(text.upper())
     text = text.replace("THIS", "THIS " + str(now.year), -1)
-    matches = search_dates(text, languages=['en'])
+    matches = search_dates(text, languages=['en'], settings={'TIMEZONE': 'US/Eastern', 'TO_TIMEZONE': 'UTC'})
     return matches
-
 
 if __name__ == "__main__":
     f = open("test_dates.txt", "r")

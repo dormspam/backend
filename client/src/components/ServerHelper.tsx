@@ -1,5 +1,6 @@
 export enum ServerURL {
   login = "/api/v1/client/login",
+  getAllEvents = "/api/v1/events/all",
   getEvents = "/api/v1/events",
   getEvent = "/api/v1/events/event",
   publishEvent = "/api/v1/events/publish",

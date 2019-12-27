@@ -21,8 +21,19 @@ const LoginCallback = (props: RouteComponentProps) => {
     const id = search.get("uid");
     const token = search.get("token");
     const email = search.get("email");
-    if (isLoggedIn) {
+    const etoken = search.get("etoken");
+    const eid = search.get("eid");
+    if (loginStatus === Status.succeed) {
+      if (eid != null) {
+        if (etoken == null) {
+          window.location.replace(`/event/${eid}`);
+        } else {
+          window.location.replace(`/event/${eid}?etoken=${etoken}`);
+        }
+        return;
+      }
       window.location.replace("/");
+      return;
     }
     if (
       id != null &&
@@ -38,7 +49,7 @@ const LoginCallback = (props: RouteComponentProps) => {
       setLoginStatus(Status.failed);
     }
     // eslint-disable-next-line
-  }, [isLoggedIn, loginStatus]);
+  }, [loginStatus]);
 
   if (loginStatus === Status.start || loginStatus === Status.loading) {
     return <div>Attempting to login</div>;

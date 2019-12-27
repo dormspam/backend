@@ -100,7 +100,7 @@ export const getColorNames = (t: number) => {
   return ret;
 };
 
-type EventString = {
+export type EventString = {
   start: string;
   end: string;
   title: string;
@@ -115,6 +115,8 @@ export type Event = {
   desc: string;
   link: string;
   approved: string;
+  published: string;
+  header:string;
 };
 
 const CalendarPage = () => {
@@ -170,6 +172,7 @@ const CalendarPage = () => {
               <Dropdown
                 isOpen={isDropdownOpen}
                 toggle={() => setIsDropdownOpen(d => !d)}
+                className="m-4"
               >
                 <DropdownToggle
                   caret
@@ -180,7 +183,6 @@ const CalendarPage = () => {
                 <DropdownMenu>
                   <DropdownItem header>Sort by:</DropdownItem>
                   {SortTypeValues.map(val => {
-                    const color = val.color;
                     return (
                       <DropdownItem
                         key={val.type}
@@ -193,6 +195,7 @@ const CalendarPage = () => {
                   })}
                 </DropdownMenu>
               </Dropdown>
+              <p> Use the calendar to learn more about events!</p>
               {selectedEvent ? (
                 <Card body className="m-2">
                   <CardTitle>

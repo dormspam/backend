@@ -21,3 +21,8 @@ class User(Base):
 
     def __init__(self, email):
         self.email = email
+
+    def json(self):
+        return {
+            'admin_is': self.admin_is
+        }

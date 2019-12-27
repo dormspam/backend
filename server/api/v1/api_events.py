@@ -36,7 +36,7 @@ PUBLISH_EVENT.add_argument('eid',
                            required=True)
 PUBLISH_EVENT.add_argument('etoken',
                            help='Need token',
-                           required=True)
+                           required=False)
 PUBLISH_EVENT.add_argument('title',
                            help='Need title',
                            required=True)
@@ -50,8 +50,17 @@ PUBLISH_EVENT.add_argument('etype')
 class PublishEvent(Resource):
     @require_login(PUBLISH_EVENT)
     def post(self, data, user):
-        if (update_and_publish_event(data['eid'], data['etoken'], data['title'], data['etype'], data['description'],
-                                     data['start_date'], data['end_date'], data['link'])):
+        if (update_and_publish_event(
+            data['eid'],
+            data['etoken'],
+            data['title'],
+            data['etype'],
+            data['description'],
+            data['start_date'],
+            data['end_date'],
+            data['link'],
+            user=user
+        )):
             return return_success({"message": "published and waiting approval!"})
         return return_failure("something went wrong")
 
@@ -84,6 +93,15 @@ class GetEvents(Resource):
             'events': [e.json() for e in events]
         })
 
+class GetAllEvents(Resource):
+    @require_login(GET_EVENTS)
+    def post(self, data, user):
+        if (not user.admin_is):
+            return return_failure("not admin")
+        events = get_all_events()
+        return return_success({
+            'events': [e.json() for e in events]
+        })
 
 GET_EVENT = reqparse.RequestParser(bundle_errors=True)
 GET_EVENT.add_argument('eid',

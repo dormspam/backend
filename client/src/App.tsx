@@ -13,9 +13,10 @@ import "react-s-alert/dist/s-alert-default.css";
 import "react-s-alert/dist/s-alert-css-effects/slide.css";
 import CalendarPage from "./components/CalendarPage";
 import EventPage from "./components/EventPage";
+import AdminPage from "./components/AdminPage";
 
 const App: React.FC = () => {
-  document.title = process.env.REACT_APP_NAME || "";
+  document.title = "MIT Campus Events";
   return (
     <Fragment>
       <Router>
@@ -24,8 +25,8 @@ const App: React.FC = () => {
             <AppHeader />
             <Switch>
               <Route exact path="/login/auth" component={LoginCallback} />
-              <Route path="/event/:eid/:token" component={EventPage} />
               <Route path="/event/:eid" component={EventPage} />
+              <Route path="/admin" component={AdminPage} />
               <Route path="/login" component={LandingPage} />
               <Route path="/" component={CalendarPage} />
             </Switch>

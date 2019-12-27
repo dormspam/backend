@@ -4,14 +4,20 @@ from datetime import timedelta
 from sqlalchemy import exc
 
 
-def get_event(eid, token, override = True):
+def get_event(eid, token, override=False, user=None):
     event = Event.query.filter_by(eid=eid).first()
+    if (user is not None and user.admin_is):
+        return event
     if not override and (event is None or event.token != token):
         return None
     return event
 
+
 def get_events():
     return Event.query.filter_by(approved_is=True)
+
+def get_all_events():
+    return Event.query.order_by(Event.id.desc()).all()
 
 def create_server_event(title, etype, descrition, time_start, time_end=None, link=None, headerInfo=None):
     event = Event(None)
@@ -40,20 +46,22 @@ def create_server_event(title, etype, descrition, time_start, time_end=None, lin
         return None
     return event
 
-def update_and_publish_event(eid, token, title, etype, descrition, time_start, time_end=None, link=None):
-    event = get_event(eid, token)
+
+def update_and_publish_event(eid, token, title, etype, description, time_start, time_end=None, link=None, user=None):
+    event = get_event(eid, token, user=user)
     if (event is None):
         return False
     event.published_is = True
     event.title = title
     event.etype = etype
-    event.description = descrition
+    event.description = description
     event.time_start = time_start
     event.time_end = time_start + \
         timedelta(hours=1) if time_end is None else time_end
     event.cta_link = link
     db.session.commit()
     return True
+
 
 def approve_event(eid):
     event = get_event(eid, None, override=True)

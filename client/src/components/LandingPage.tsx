@@ -6,7 +6,7 @@ const LandingPage = () => {
   const { redirectToDopeAuth } = useLogin();
   return (
     <Container>
-      <h1>{process.env.REACT_APP_NAME}</h1>
+      <h1>to.mit.edu/events</h1>
 
       <Button onClick={() => redirectToDopeAuth()} color="primary">
         Login with DopeAuth

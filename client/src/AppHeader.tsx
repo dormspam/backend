@@ -30,18 +30,20 @@ const AppHeader: React.FC = () => {
     </UncontrolledDropdown>
   ) : (
     <NavItem>
-      <NavLink onClick={() => redirectToDopeAuth()}>Login with DopeAuth</NavLink>
+      <NavLink onClick={() => redirectToDopeAuth()}>
+        Login
+      </NavLink>
     </NavItem>
   );
   return (
     <div>
       <Navbar color="light" light expand="md">
-        <NavbarBrand href="/">MIT Campus Events</NavbarBrand>
+        <NavbarBrand href="/">MIT Campus Events (to.mit.edu/events)</NavbarBrand>
         <NavbarToggler onClick={() => setIsOpen(open => !open)} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
-              <NavLink href="mailto:help@hackmit.org">Contact Us</NavLink>
+              <NavLink href="mailto:dorm-spam-announce@mit.edu">Want to help out?</NavLink>
             </NavItem>
             {viewerButton}
           </Nav>

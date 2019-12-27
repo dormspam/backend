@@ -29,6 +29,7 @@ api.add_resource(api_events.PublishEvent, "/events/publish")
 api.add_resource(api_events.ApproveEvent, "/events/approve")
 
 api.add_resource(api_events.GetEvents, "/events")
+api.add_resource(api_events.GetAllEvents, "/events/all")
 api.add_resource(api_events.GetEvent, "/events/event")
 
 # Login

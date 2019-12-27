@@ -5,7 +5,8 @@ import { useCookies } from "react-cookie";
 export enum Query {
   name = "name",
   email = "email",
-  uid = "uid"
+  uid = "uid",
+  admin = "admin_is",
 }
 
 const useViewer = () => {

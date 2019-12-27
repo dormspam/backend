@@ -60,14 +60,22 @@ class Event(Base):
     #   type: number;
     #   desc: string;
     # };
-    def json(self):
+    def json(self, fullJSON=True):
+        additionalJSON = {}
+        if (fullJSON):
+            additionalJSON = {
+                'desc': self.description,
+            }
+
         return {
             'title': self.title,
-            'desc': self.description,
-            'start': self.time_start.isoformat(),
-            'end': self.time_end.isoformat(), # TODO(kevinfang): ISO UTC
+            'start': self.time_start.isoformat() + "Z",
+            'end': self.time_end.isoformat() + "Z",
             'type': self.etype,
             'eid': self.eid,
             'link': self.cta_link,
-            'approved': self.approved_is
+            'approved': self.approved_is,
+            'published': self.published_is,
+            'header': self.header,
+            **additionalJSON
         }

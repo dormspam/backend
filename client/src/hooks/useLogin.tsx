@@ -71,6 +71,7 @@ const useLogin = () => {
         setCookie("token", json["token"], { path: "/" });
         setCookie("uid", json["uid"], { path: "/" });
         setCookie("email", json["email"], { path: "/" });
+        setCookie("admin_is", json["admin_is"], { path: "/" });
         return true;
       }
     } catch (error) {}
@@ -84,10 +85,11 @@ const useLogin = () => {
     };
   };
   const logout = () => {
-    removeCookie("name");
-    removeCookie("token");
-    removeCookie("uid");
-    removeCookie("email");
+    removeCookie("name", { path: "/" });
+    removeCookie("token", { path: "/" });
+    removeCookie("uid", { path: "/" });
+    removeCookie("email", { path: "/" });
+    removeCookie("admin_is", { path: "/" });
   };
   return { redirectToDopeAuth, getCredentials, login, logout };
 };

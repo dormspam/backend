@@ -24,4 +24,4 @@ class ClientLogin(Resource):
             # Unauthenticated
             return return_failure("login credentials invalid")
 
-        return return_success({"email": email, "token": client.token, "uid": client.uid})
+        return return_success({"email": email, "token": client.token, "uid": client.uid, **client.user.json()})
