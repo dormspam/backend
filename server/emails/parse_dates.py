@@ -3,7 +3,8 @@ import re
 import calendar
 import datetime
 from pytz import timezone
-
+from datetime import timedelta
+from dateutil import tz
 
 def expand_event_time(text):
     # remmove pipelines
@@ -64,7 +65,12 @@ def parse_dates(text, time_required=True):
             else:
                 start_date = potential_date
         i += 1
-    if start_date:
+    if not time_required and start_date:
+        if (start_date.replace(tzinfo=tz.gettz('UTC')).astimezone(tz.gettz('US/Eastern')).hour == 0):
+            return [start_date, start_date + timedelta(hours=24)]
+        else:
+            return [start_date]
+    if time_required and start_date:
         return [start_date]
     return None
 

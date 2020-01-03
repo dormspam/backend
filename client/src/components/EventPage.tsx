@@ -138,11 +138,10 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
                     selected={eventEnd}
                     onChange={date => setEventEnd(date)}
                     showTimeSelect
-                    showTimeSelectOnly
                     timeFormat="HH:mm"
-                    timeIntervals={15}
+                    timeIntervals={30}
                     timeCaption="time"
-                    dateFormat="h:mm aa"
+                    dateFormat="MMMM d, yyyy h:mm aa"
                     className="form-control"
                   />
                   {new Date().getTimezoneOffset() / 60 != 5 ? (
