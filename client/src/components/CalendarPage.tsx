@@ -90,8 +90,11 @@ export const getColorNames = (t: number) => {
     }
     if (val.type & t) {
       return (
-        <Badge key={val.type} className="mx-2" 
-        style={{backgroundColor:color}}>
+        <Badge
+          key={val.type}
+          className="mx-2"
+          style={{ backgroundColor: color }}
+        >
           {val.name}
         </Badge>
       );
@@ -116,11 +119,10 @@ export type Event = {
   link: string;
   approved: string;
   published: string;
-  header:string;
+  header: string;
 };
 
 const CalendarPage = () => {
-  const { getCredentials } = useLogin();
   const localizer = momentLocalizer(moment);
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -151,7 +153,6 @@ const CalendarPage = () => {
         event => event.type == sortType.type || sortType.type == SortType.ALL
       )
     );
-    console.log(allEvents);
   }, [sortType, allEvents]);
 
   useEffect(() => {

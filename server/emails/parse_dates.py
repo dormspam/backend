@@ -2,6 +2,7 @@ from dateparser.search import search_dates
 import re
 import calendar
 import datetime
+from pytz import timezone
 
 
 def expand_event_time(text):
@@ -39,7 +40,7 @@ def expand_event_time(text):
     return text
 
 
-def parse_dates(text):
+def parse_dates(text, time_required=True):
     test_strings = ["AM", "PM", "NOON", "NIGHT"]
     matches = parse_dates_possibilities(text)
     # Now we need to find the actual dates
@@ -48,9 +49,16 @@ def parse_dates(text):
     # Start by looking forwards and finding the first one with an AM or PM
     i = 0
     start_date = None
+    set_time = False
     while i < len(matches):
         matched_string, potential_date = matches[i]
-        if (any([t in matched_string for t in test_strings])):
+        if (not time_required):
+            # Must be a valid full month
+            for month in calendar.month_name[1:]:
+                if month.lower() in matched_string.lower():
+                    start_date = potential_date
+                    break
+        if (time_required and any([t in matched_string for t in test_strings])):
             if start_date:
                 return [start_date, potential_date]
             else:
