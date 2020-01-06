@@ -17,15 +17,18 @@ else:
     from server.emails.parse_type import parse_type
     from server.controllers.events import create_server_event
 
-
-def remove_forwards(text): 
+def remove_forwards(text):
     # Remove masseeh talk
     if "______________" in text and "maseeh-talk mailing list" in text:
         text = re.split(r'_{8,}\r?\nmaseeh\-talk', text, 1, re.I)[0]
 
-    if "-----" in text and "From:" in text and "Subject:" in text:
+    # Remove baker forum
+    if "______________" in text and "baker-forum mailing list" in text:
+        text = re.split(r'_{8,}\r?\nbaker\-forum', text, 1, re.I)[0]
+
+    while (("-----" in text or "____________" in text) and "From:" in text and "Subject:" in text):
         # Forwarded message
-        texts = re.split(r'\r?\n\r?\n', text, 1, re.I)[1]
+        text = re.split(r'\r?\n\r?\n', text.split("Subject:",maxsplit=1)[1], 1, re.I)[1]
 
     return text
 
@@ -43,9 +46,14 @@ def parse_email(email_text):
         return message_body
 
     message_body = find_plain_txt(b)
-    message_clean = remove_forwards(message_body.decode("utf-8"))
+    message_clean = remove_forwards(message_body.decode("utf-8", "ignore"))
 
-    title = b.get("subject").replace("Fwd: ", "").replace("Re: ", "").replace("[Castle-Talk]", "").strip()
+    remove_strings = ["Fwd: ", "Re: ", "[Castle-Talk]", "BAKER-FORUM: "]
+    title = b.get("subject")
+    for rs in remove_strings:
+        title = title.replace(rs, "")
+    title = title.strip()
+
     etype = parse_type(message_clean)
     dates = parse_dates(title + "\n" + message_clean,
                         time_required=not ((etype & (1 << 5)) > 0))

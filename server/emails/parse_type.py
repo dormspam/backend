@@ -17,7 +17,7 @@ def parse_type(text):
 def is_performance(text):
     perf_strings = ["ticket", "admission","a cappella","acappella", "concert"]
     def test():
-        if (any([x in text for x in perf_strings])):
+        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
             return True
         return False
     if test():
@@ -27,7 +27,7 @@ def is_performance(text):
 def is_application(text):
     test_strings = ["apply", "deadline", "sign up"]
     def test():
-        if (any([x in text for x in test_strings])):
+        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
             return True
         return False
     if test():
@@ -38,7 +38,7 @@ def is_club(text):
     # TODO(kevinfang): whitelist by to sender
     test_strings = ["club", "student group", "cultural group"]
     def test():
-        if (any([x in text for x in test_strings])):
+        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
             return True
         return False
     if test():
@@ -48,7 +48,7 @@ def is_club(text):
 def is_career(text):
     test_strings = ["career", "summer plans", "internship"]
     def test():
-        if (any([x in text for x in test_strings])):
+        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
             return True
         return False
     if test():
@@ -56,9 +56,9 @@ def is_career(text):
     return 0
 
 def is_food(text):
-    food_strings = ["cookie", "food", "eat", "study break"]
+    test_strings = ["cookie", "food", "eat", "study break"]
     def test():
-        if (any([x in text for x in food_strings])):
+        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
             return True
         return False
     if test():
@@ -68,7 +68,7 @@ def is_food(text):
 def is_fundraising(text):
     test_strings = ["donate"]
     def test():
-        if (any([x in text for x in test_strings])):
+        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
             return True
         return False
     if test():

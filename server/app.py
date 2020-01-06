@@ -7,6 +7,8 @@ import os
 print("Initializing Backend")
 app = Flask(__name__, static_folder='build')
 
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
 env = DotEnv(app)
 env.init_app(app, env_file="./.env", verbose_mode=True)
 
