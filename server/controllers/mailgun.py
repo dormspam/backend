@@ -15,7 +15,7 @@ def sendPublishEmail(email, eid, etoken):
             "MIT Events <mailgun@mail.tenxeng.com>",
             "to": [email],
             "bcc": ["kevin21@mit.edu"],
-            "reply-to": ["dorm-spam-announce@mit.edu"],
+            "reply-to": ["dorm-spam-publish@mit.edu"],
             "subject": "Trying to dormspam?",
             "template":
             "publish",

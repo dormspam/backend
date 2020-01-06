@@ -43,7 +43,7 @@ const AppHeader: React.FC = () => {
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
-              <NavLink href="mailto:dorm-spam-announce@mit.edu">Want to help out?</NavLink>
+              <NavLink href="mailto:dorm-spam-publish@mit.edu">Want to help out?</NavLink>
             </NavItem>
             {viewerButton}
           </Nav>
