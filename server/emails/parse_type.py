@@ -15,7 +15,7 @@ def parse_type(text):
     return sum([f(text) for f in funcs])
 
 def is_performance(text):
-    perf_strings = ["ticket", "admission","a cappella","acappella", "concert"]
+    test_strings = ["ticket", "admission","a cappella","acappella", "concert"]
     def test():
         if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
             return True
