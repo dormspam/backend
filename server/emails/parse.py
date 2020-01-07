@@ -53,7 +53,7 @@ def parse_email(email_text):
     for rs in remove_strings:
         title = title.replace(rs, "")
     title = title.strip()
-
+    print("Parsing email:", title)
     etype = parse_type(message_clean)
     dates = parse_dates(title + "\n" + message_clean,
                         time_required=not ((etype & (1 << 5)) > 0))
@@ -67,7 +67,7 @@ def parse_email(email_text):
         date_end = dates[1]
     else:
         date_end = None
-    if etype > 0:
+    if etype > 0 and date_start is not None:
         return create_server_event(title,
                                    etype,
                                    message_clean,
@@ -76,6 +76,8 @@ def parse_email(email_text):
                                    link=urls,
                                    headerInfo=header
                                    )
+    else:
+        print("Could not classify event or determine time")
     return None
 
 

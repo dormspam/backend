@@ -25,9 +25,13 @@ def create_server_event(title, etype, descrition, time_start, time_end=None, lin
     event.title = title
     event.etype = etype
     event.description = descrition
-    event.time_start = time_start
-    event.time_end = (time_start + \
-        timedelta(hours=1)) if time_end is None else time_end
+    if (time_start is None):
+        event.time_start = datetime.datetime.now()
+        event.time_end = datetime.datetime.now()
+    else:
+        event.time_start = time_start
+        event.time_end = (time_start + \
+            timedelta(hours=1)) if time_end is None else time_end
     event.cta_link = link
 
     retry = 10

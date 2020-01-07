@@ -25,7 +25,7 @@ def is_performance(text):
     return 0
 
 def is_application(text):
-    test_strings = ["apply", "deadline", "sign up"]
+    test_strings = ["apply", "deadline", "sign up", "audition"]
     def test():
         if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
             return True
