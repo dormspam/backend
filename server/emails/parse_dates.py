@@ -9,6 +9,7 @@ from dateutil import tz
 def expand_event_time(text):
     # remmove pipelines
     text = re.sub(r'\|', "", text)
+    text = re.sub(r"[\*\.\,]", " ", text) # Remove stars and punctuation
 
     # move dates closer to month
     for month in calendar.month_name[1:]:
@@ -59,7 +60,7 @@ def parse_dates(text, time_required=True):
                 if month.lower() in matched_string.lower():
                     start_date = potential_date
                     break
-        if (time_required and any([t in matched_string for t in test_strings])):
+        if (any([t in matched_string for t in test_strings])):
             if start_date:
                 return [start_date, potential_date]
             else:
