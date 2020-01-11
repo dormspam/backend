@@ -77,7 +77,7 @@ def parse_email(email_text):
                                    headerInfo=header
                                    )
     else:
-        print("Could not classify event or determine time")
+        print("Could not classify event or determine time", etype, date_start)
     return None
 
 
