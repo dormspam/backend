@@ -17,10 +17,14 @@ class Event(Base):
 
     # Email header information
     header = Column(String, default="")
+    club = Column(String, default="")
 
     # Event characteristics
     title = Column(String)
+    location = Column(String, default="")
     description = Column(Text, default="")
+    description_html = Column(Text, default="")
+
     cta_link = Column(String)
     time_start = Column(DateTime)
     time_end = Column(DateTime)
@@ -65,12 +69,14 @@ class Event(Base):
         if (fullJSON):
             additionalJSON = {
                 'desc': self.description,
+                'desc_html': self.description_html
             }
 
         return {
             'title': self.title,
             'start': self.time_start.isoformat() + "Z",
             'end': self.time_end.isoformat() + "Z",
+            'location': self.location,
             'type': self.etype,
             'eid': self.eid,
             'link': self.cta_link,

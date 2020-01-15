@@ -9,7 +9,10 @@ from dateutil import tz
 def expand_event_time(text):
     # remmove pipelines
     text = re.sub(r'\|', "", text)
-    text = re.sub(r"[\*\.\,]", " ", text) # Remove stars and punctuation
+    text = re.sub(r"[\*\.\,]", " .", text) # Remove stars and punctuation
+
+    # Remove all greator than 3 numbers
+    text = re.sub(r"[0-9]{3,}", "number", text)
 
     # move dates closer to month
     for month in calendar.month_name[1:]:
@@ -45,6 +48,7 @@ def expand_event_time(text):
 def parse_dates(text, time_required=True):
     test_strings = ["AM", "PM", "NOON", "NIGHT"]
     matches = parse_dates_possibilities(text)
+    print(matches)
     # Now we need to find the actual dates
     if not matches:
         return None

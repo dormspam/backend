@@ -19,12 +19,15 @@ def get_events():
 def get_all_events():
     return Event.query.order_by(Event.id.desc()).all()
 
-def create_server_event(title, etype, descrition, time_start, time_end=None, link=None, headerInfo=None):
+def create_server_event(title, etype, description, time_start, message_html=None,
+                                   location=None, time_end=None, link=None, headerInfo=None):
     event = Event(None)
     event.header = headerInfo
     event.title = title
     event.etype = etype
-    event.description = descrition
+    event.description = description
+    event.location = location
+    event.description_html = message_html
     if (time_start is None):
         event.time_start = datetime.datetime.now()
         event.time_end = datetime.datetime.now()

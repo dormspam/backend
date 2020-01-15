@@ -1,85 +1,54 @@
+import re
 # Same as CalendarPage.tsx
 # enum SortType {
 #   ALL = 0,
-#   FUNDRAISING = 1 << 1,
+#   OTHER = 1 << 1,
 #   FOOD = 1 << 2,
 #   CAREER = 1 << 3,
-#   CLUB = 1 << 4,
+#   FUNDRAISING = 1 << 4,
 #   APPLICATION = 1 << 5,
-#   PERFORMANCE = 1 << 6
+#   PERFORMANCE = 1 << 6,
+#   BOBA = 1 << 7,
+#   TALKS = 1 << 8,
+#   EECS = 1 << 9,
 # }
+CATEGORIES = {
+    'FOOD': (1 << 2, ["cookie", "food", "eat", "study break", "boba", "bubble tea", "chicken", "bonchon", "bon chon", "bertucci",
+                      "pizza", "sandwich", "leftover", "salad", "burrito", "dinner provided", "lunch provided", "breakfast provided",
+                      "dinner included", "lunch included", "ramen", "kbbq", "dumplings", "waffles", "csc",
+                      "aaa", "ats", "dim sum", "drink"]),
+    'CAREER': (1 << 3, ["career", "summer plans", "internship", "xfair", "recruiting"]),
+    'FUNDRAISING': (1 << 4, ["donate"]),
+    'APPLICATION': (1 << 5, ["apply", "deadline", "sign up", "audition", "join", "application"]),
+    'PERFORMANCE': (1 << 6, ["orchestra", "shakespeare", "theatre", "theater", "tryout",
+                             "audition", "muses", "serenade", "syncopasian", "ohms", "logarhythms", "chorallaries",
+                             "symphony", "choir", "concert", "ensemble", "jazz", "resonance", "a capella", "toons",
+                             "sing", "centrifugues", "dancetroupe", "adt", "asian dance team", "mocha moves",
+                             "ridonkulous", "donk", "fixation", "bhangra", "roadkill", "vagina monologues", "24 hour show", "acappella", "admission", "ticket"]),
+    'BOBA': (1 << 7, ["boba", "bubble tea", "kung fu tea", "kft", "teado", "tea do"]),
+    'TALKS': (1 << 8, ["discussion", "q&a", "tech talk", "recruiting", "info session", "information session"
+                       "infosession", "workshop", "research"]),
+    'EECS-jobs-announce': (1 << 9, ["eecs-jobs-announce"]),
+}
 
 def parse_type(text):
+    global CATEGORIES
+
+    score = 0
     text = text.lower()
-    funcs = [is_performance, is_application, is_career, is_club, is_food, is_fundraising]
-    return sum([f(text) for f in funcs])
-
-def is_performance(text):
-    test_strings = ["ticket", "admission","a cappella","acappella", "concert"]
-    def test():
-        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
-            return True
-        return False
-    if test():
-        return 1 << 6
-    return 0
-
-def is_application(text):
-    test_strings = ["apply", "deadline", "sign up", "audition", "join", "application"]
-    def test():
-        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
-            return True
-        return False
-    if test():
-        return 1 << 5
-    return 0
-
-def is_club(text):
-    # TODO(kevinfang): whitelist by to sender
-    test_strings = ["club", "student group", "cultural group"]
-    def test():
-        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
-            return True
-        return False
-    if test():
-        return 1 << 4
-    return 0
-
-def is_career(text):
-    test_strings = ["career", "summer plans", "internship"]
-    def test():
-        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
-            return True
-        return False
-    if test():
-        return 1 << 3
-    return 0
-
-def is_food(text):
-    test_strings = ["cookie", "food", "eat", "study break"]
-    def test():
-        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
-            return True
-        return False
-    if test():
-        return 1 << 2
-    return 0
-
-def is_fundraising(text):
-    test_strings = ["donate"]
-    def test():
-        if (any([" " + x in text or "." + x in text or "\n" + x in text for x in test_strings])):
-            return True
-        return False
-    if test():
-        return 1 << 1
-    return 0
+    for key in CATEGORIES:
+        mod, keywords = CATEGORIES[key]
+        if (any([re.search(f"\W{x}\W", text, flags=re.I) is not None for x in keywords])):
+            score += mod
+    if score == 0:
+        return 1 # Will not classify this at all
+    return score
 
 if __name__ == "__main__":
     f = open("test_type.txt", "r")
     for l in f.readlines():
-        print(l[:40].strip())
-        funcs = [is_performance, is_application, is_career, is_club, is_food, is_fundraising]
-        for f in funcs:
-            if (f(l.lower().strip())):
-                print(f.__name__)
+        print("****** " + l[:60].strip() + "... **********")
+        for key in CATEGORIES:
+            mod, keywords = CATEGORIES[key]
+            if (any([re.search(f"\W{x}\W", l.lower().strip(), flags=re.I) is not None for x in keywords])):
+                print(key)

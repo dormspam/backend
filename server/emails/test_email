@@ -1,5 +1,4 @@
-
-teReturn-Path: <kevin21@mit.edu>
+Return-Path: <kevin21@mit.edu>
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
  by inbound-smtp.us-east-1.amazonaws.com with SMTP id dand4tqgvhdb9pejapt4v6hhoch73f4tfpnfpgg1
  for dormspam@tenxeng.com;

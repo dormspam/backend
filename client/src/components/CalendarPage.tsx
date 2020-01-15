@@ -25,21 +25,27 @@ import useLogin from "../hooks/useLogin";
 // Also update parse_type.py
 enum SortType {
   ALL = 0,
-  FUNDRAISING = 1 << 1,
+  OTHER = 1 << 1,
   FOOD = 1 << 2,
   CAREER = 1 << 3,
-  CLUB = 1 << 4,
+  FUNDRAISING = 1 << 4,
   APPLICATION = 1 << 5,
-  PERFORMANCE = 1 << 6
+  PERFORMANCE = 1 << 6,
+  BOBA = 1 << 7,
+  TALKS = 1 << 8,
+  EECS = 1 << 9,
 }
 const SortTypeValues = [
   { type: SortType.ALL, name: "All Events", color: null },
-  { type: SortType.FUNDRAISING, name: "Fundraising", color: "lightblue" },
+  { type: SortType.OTHER, name: "Nontyped", color: null },
   { type: SortType.FOOD, name: "Food", color: "green" },
   { type: SortType.CAREER, name: "Career", color: "orange" },
-  { type: SortType.CLUB, name: "Club Events", color: "purple" },
+  { type: SortType.FUNDRAISING, name: "Fundraising", color: "lightblue" },
   { type: SortType.APPLICATION, name: "Application Deadlines", color: "gold" },
-  { type: SortType.PERFORMANCE, name: "Performance", color: "pink" }
+  { type: SortType.PERFORMANCE, name: "Performance", color: "pink" },
+  { type: SortType.BOBA, name: "Boba", color: "black" },
+  { type: SortType.TALKS, name: "Talks", color: "maroon"},
+  { type: SortType.EECS, name: "EECS-Jobs-Announce", color: "brown"}
 ];
 
 type SortTypeObj = {
@@ -116,6 +122,7 @@ export type Event = {
   title: string;
   type: number;
   desc: string;
+  desc_html: string;
   link: string;
   approved: string;
   published: string;
@@ -207,6 +214,7 @@ const CalendarPage = () => {
                     {selectedEvent.start.toDateString()} @{" "}
                     {selectedEvent.start.toLocaleTimeString()}
                   </h4>
+                  <div dangerouslySetInnerHTML={{__html: selectedEvent.desc_html}} />
                   <code style={{ whiteSpace: "pre-wrap" }}>
                     {selectedEvent.desc}
                   </code>
