@@ -45,7 +45,7 @@ def remove_forwards(text):
 def clean_and_update_html(html, images):
     cleaner = Cleaner()
     cleaner.javascript = True
-    html = lxml.html.tostring(cleaner.clean_html(lxml.html.fragment_fromstring(html)), method='html', encoding='unicode',
+    html = lxml.html.tostring(cleaner.clean_html(lxml.html.fromstring(html)), method='html', encoding='unicode',
                   doctype='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"'
                           ' "http://www.w3.org/TR/html4/strict.dtd">')
     # forwarding
