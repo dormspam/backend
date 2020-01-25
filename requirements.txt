@@ -8,11 +8,14 @@ chardet==3.0.4
 Click==7.0
 dateparser==0.7.2
 Flask==1.1.1
+Flask-Cors==3.0.8
 Flask-DotEnv==0.1.2
+Flask-Login==0.4.1
 Flask-Migrate==2.5.2
 Flask-RESTful==0.3.7
 Flask-Script==2.0.6
 Flask-SQLAlchemy==2.4.0
+Flask-SSLify==0.1.5
 gspread==3.1.0
 gunicorn==19.9.0
 httplib2==0.13.1
