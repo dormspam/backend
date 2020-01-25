@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style type="text/css">
+    * {
+      box-sizing: border-box;
+      font-family: Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      font-size: 1em;
+      text-align: left;
+      text-transform: lowercase;
+      color: #b0b9c7;
+    }
+
+    h1 a {
+      color: #b0b9c7;
+      text-decoration: none;
+    }
+
+    h2 {
+      color: #5f63d4;
+      margin: 12px 0;
+      font-size: 2em;
+    }
+
+    p.last {
+      margin-top: 12px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .header {
+      padding: 2.5em;
+      background-color: #fff;
+    }
+
+    .header img {
+      display: block;
+      margin: 0 auto;
+      width: 240px;
+    }
+
+    .content {
+      background-color: #eef1f6;
+      padding: 2.5em;
+    }
+
+    .footer {
+      font-weight: 400;
+      color: #b0b9c7;
+      padding: 2.5em;
+      letter-spacing: 0.05em;
+      background-color: #060219;
+      padding-bottom: 8em;
+    }
+
+    .footer p {
+      font-size: 0.8em;
+      margin-top: 0.5em;
+    }
+
+    .footer p a {
+      color: #b0b9c7;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <a href="https://beta.dormsp.am"><img src="https://beta.dormsp.am/img/dormspam.png" /></a>
+    </div>
+    <div class="content">
+      <p>Hello! Please use the following code to log into your account:</p>
+      <h2>{{ code }}</h2>
+      <p>This code will expire in 10 minutes. If you weren't prompted for a verification code, please let us know at <a href="mailto:dormsp.am@mit.edu">dormsp.am@mit.edu</a>.</p>
+      <p class="last">Thanks for using dormsp.am!</p>
+    </div>
+    <div class="footer">
+      <h1><a href="https://beta.dormsp.am">dormsp.am</a></h1>
+      <p><a href="https://beta.dormsp.am/settings">manage your preferences</a></p>
+    </div>
+  </div>
+</body>
+</html>

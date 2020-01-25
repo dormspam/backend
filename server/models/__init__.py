@@ -45,3 +45,8 @@ def add_to_db(obj, others=None,rollbackfunc=None):
         else:
             committed = True
     return committed
+
+
+from .client import Client
+from .event import Event 
+from .user import User

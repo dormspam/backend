@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style type="text/css">
+    * {
+      box-sizing: border-box;
+      font-family: Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      font-size: 1em;
+      text-align: left;
+      text-transform: lowercase;
+      color: #b0b9c7;
+    }
+
+    h1 a {
+      color: #b0b9c7;
+      text-decoration: none;
+    }
+
+    h2 {
+      font-weight: 400;
+      font-size: 1.1em;
+      text-align: center;
+      color: #5f63d4;
+    }
+
+    h3 {
+      letter-spacing: 0.1em;
+      font-size: 0.9em;
+      text-align: left;
+      text-transform: capitalize;
+      color: #707d93;
+      padding-bottom: 1em;
+    }
+
+    .container {
+      display: table;
+      margin: 0 auto;
+      padding: 1em 1em;
+      width: 90%;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .header {
+      padding: 2.5em;
+      background-color: #fff;
+    }
+
+    .header img {
+      width: 120px;
+    }
+
+    .content {
+      background-color: #eef1f6;
+      padding: 2.5em;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1em;
+      background-color: #dbe1ea;
+      color: #55596b;
+      padding: 1.5em 2em;
+      border-radius: 6px;
+      box-shadow: #fff;
+      position: relative;
+      text-decoration: none;
+    }
+
+    .card-content {
+      width: 90%;
+    }
+
+    .arrow {
+      height: 100%;
+      width: 5%;
+      color: #5f63d4;
+      text-align: right;
+    }
+
+    .title {
+      padding-bottom: 4em;
+      padding-left: 2em;
+    }
+
+    .larger {
+      font-weight: 600;
+      font-size: 2em;
+    }
+
+    .footer {
+      font-weight: 400;
+      color: #b0b9c7;
+      padding: 2.5em;
+      letter-spacing: 0.05em;
+      background-color: #060219;
+      padding-bottom: 8em;
+    }
+
+    .footer p {
+      font-size: 0.8em;
+      margin-top: 0.5em;
+    }
+
+    .footer p a {
+      color: #b0b9c7;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <a href="https://beta.dormsp.am"><img src="https://beta.dormsp.am/img/dormspam.png" /></a>
+      <h2>your daily curated digest for <br /><span class="larger">January 31</span></h2>
+    </div>
+    <div class="content">
+      {% for category in categories %}
+        <div class="container">
+          <h3>{{ category.name }}</h3>
+          {% for link in category.links %}
+            <a class="card" href="#">
+              <div class="card-content">
+                {{ link.name }}
+              </div>
+              <div class="arrow">&#9658;</div>
+            </a>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+    <div class="footer">
+      <h1><a href="https://beta.dormsp.am">dormsp.am</a></h1>
+      <p><a href="https://beta.dormsp.am/settings">manage your preferences</a></p>
+    </div>
+  </div>
+</body>
+</html>
