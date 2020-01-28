@@ -100,7 +100,7 @@ class GetAllEvents(Resource):
             return return_failure("not admin")
         events = get_all_events()
         return return_success({
-            'events': [e.json() for e in events]
+            'events': [e.json(fullJSON=False) for e in events]
         })
 
 GET_EVENT = reqparse.RequestParser(bundle_errors=True)
