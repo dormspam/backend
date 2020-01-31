@@ -3,6 +3,7 @@ from flask_restful import Api, Resource, reqparse
 from server.app import app
 from server.api.v1 import api_login
 from server.api.v1 import api_events
+
 import json
 
 # NOTE: all the following resources by default start with '/api/v1' so there's

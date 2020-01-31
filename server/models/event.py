@@ -85,3 +85,17 @@ class Event(Base):
             'header': self.header,
             **additionalJSON
         }
+
+    def serialize(self):
+        return {
+            "uid": self.eid,
+            "name": self.title,
+            "location": self.location,
+            "start_time": self.time_start.isoformat() + "Z",
+            "end_time": self.time_end.isoformat() + "Z",
+            "host": "NO HOST", #TODO(kevinfang): Host not implemented
+            "description": self.description_html,
+            "description_text": self.description,
+            "categories": ",Food,", #TODO(kevinfang): Categories not implemented
+            "sent_from": "test" #TODO(kevinfang): Sentfrom not implemented
+        }
