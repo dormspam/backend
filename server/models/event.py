@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime, Text
 from sqlalchemy.orm import relationship
 from server.models import Base
+from server.emails.parse_type import CATEGORIES
 from server.helpers import *
 import datetime
 import secrets
@@ -87,15 +88,21 @@ class Event(Base):
         }
 
     def serialize(self):
+        global CATEGORIES
+        cats = []
+        for key in CATEGORIES:
+            val, _, data = CATEGORIES[key]
+            if self.etype & val > 0:
+                cats.append(data['name'])
         return {
             "uid": self.eid,
             "name": self.title,
             "location": self.location,
             "start_time": self.time_start.isoformat() + "Z",
             "end_time": self.time_end.isoformat() + "Z",
-            "host": "NO HOST", #TODO(kevinfang): Host not implemented
-            "description": self.description_html,
+            "host": "MIT", #TODO(kevinfang): Host not implemented
+            "description": self.description_html if self.description_html else self.description,
             "description_text": self.description,
-            "categories": ",Food,", #TODO(kevinfang): Categories not implemented
-            "sent_from": "test" #TODO(kevinfang): Sentfrom not implemented
+            "categories": "," + ",".join(cats) + ",",
+            "sent_from": "Sent by: " + self.header.replace("|", " on ")
         }

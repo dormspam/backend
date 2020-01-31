@@ -1,6 +1,6 @@
 from server.models.event import Event
 from server.app import db
-from datetime import timedelta
+from datetime import timedelta, datetime
 from sqlalchemy import exc
 
 
@@ -12,8 +12,21 @@ def get_event(eid, token, override=False, user=None):
         return None
     return event
 
-
-def get_events():
+def get_events_by_date(from_date):
+    to_date = from_date + timedelta(days=1)
+    events = get_events().filter(
+            Event.time_start.between(from_date, to_date))
+    return events
+    
+def get_events(search = None, only_future=False):
+    if search is not None:
+        search = "%" + search + "%"
+        q = Event.query.filter_by(approved_is=True).filter(Event.description.ilike(search)).order_by(Event.time_start.asc())
+        if only_future:
+            # TODO(kevinfang) ugly
+            today = str(datetime.now()).split(" ")[0]
+            q = q.filter(Event.time_start >= today)
+        return q
     return Event.query.filter_by(approved_is=True)
 
 def get_all_events():
@@ -29,8 +42,8 @@ def create_server_event(title, etype, description, time_start, message_html=None
     event.location = location
     event.description_html = message_html
     if (time_start is None):
-        event.time_start = datetime.datetime.now()
-        event.time_end = datetime.datetime.now()
+        event.time_start = datetime.now()
+        event.time_end = datetime.now()
     else:
         event.time_start = time_start
         event.time_end = (time_start + \
