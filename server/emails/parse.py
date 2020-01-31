@@ -9,6 +9,7 @@ if __name__ == "__main__":
     from parse_urls import parse_urls
     from parse_type import parse_type
     from parse_location import parse_location
+    from new_parse_dates import new_parse_dates
 
     def create_server_event(title, etype, description, time_start,
                                    message_html=None,
@@ -24,6 +25,7 @@ else:
     from server.emails.parse_dates import parse_dates
     from server.emails.parse_urls import parse_urls
     from server.emails.parse_type import parse_type
+    from server.emails.new_parse_dates import new_parse_dates
     from server.emails.parse_location import parse_location
     from server.controllers.events import create_server_event
 
@@ -117,9 +119,9 @@ def parse_email(email_text):
     etype = parse_type(message_clean)
     location = parse_location(message_clean)
     # use precleaned data for date extraction
-    dates = parse_dates(messy_title + "\n" + message_clean)
+    dates = new_parse_dates(messy_title + "\n" + message_clean)
     if not dates and ((etype & (1 << 5)) > 0):
-        dates = parse_dates(messy_title + "\n" + message_clean,
+        dates = new_parse_dates(messy_title + "\n" + message_clean,
                         time_required=False)
     urls = parse_urls(message_clean)
     header = b.get("from") + "|" + b.get("date")
