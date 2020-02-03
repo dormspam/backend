@@ -111,6 +111,7 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
             (etoken != null && etoken.length > 0) ? (
               <>
                 <h2>Proposed</h2>
+            <p>This email was sent by: {event.header.split("|")[0]} on {new Date(event.header.split("|")[1]).toString()}</p>
                 <InputGroup>
                   <InputGroupAddon addonType="prepend">
                     Event Title:
