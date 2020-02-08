@@ -127,6 +127,7 @@ export type Event = {
   approved: string;
   published: string;
   header: string;
+  alternate_dates: string[];
 };
 
 const CalendarPage = () => {

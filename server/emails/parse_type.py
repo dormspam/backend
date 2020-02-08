@@ -30,14 +30,14 @@ CATEGORIES = {
         "description": "Career and Recruiting events held by companies on campus",
         "color": "#459AF6"
     }),
-    'FUNDRAISING': (1 << 4, ["donate"],
+    'FUNDRAISING': (1 << 4, ["donate", "donated", "donation"],
                     {
         "name": "Fundraising",
         "id": "fundraising",
         "description": "If you're looking to help a cause this is the way to go",
         "color": "#A16EE5"
     }),
-    'APPLICATION': (1 << 5, ["apply", "deadline", "sign up", "audition", "join", "application"],
+    'APPLICATION': (1 << 5, [(2, ["apply", "application", "join"]), "deadline", "sign up", "audition", "application"],
                     {
         "name": "Applications",
         "id": "applications",
@@ -93,8 +93,13 @@ def parse_type(text):
     text = text.lower()
     for key in CATEGORIES:
         mod, keywords, _ = CATEGORIES[key]
-        if (any([re.search(f"\W{x}\W", text, flags=re.I) is not None for x in keywords])):
-            score += mod
+        for x in keywords:
+            minreq = 1
+            if (type(x) == tuple):
+                minreq, x = x
+            if minreq <= sum([re.search(f"\W{x}\W", text, flags=re.I) is not None]):
+                score += mod
+                break
     if score == 0:
         return 1  # Will not classify this at all
     return score

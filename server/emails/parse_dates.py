@@ -14,12 +14,14 @@ def expand_event_time(text):
     # Remove all greator than 3 numbers
     text = re.sub(r"[0-9]{3,}", "number", text)
 
-    # move dates closer to month
+    now = datetime.datetime.now()
+
+    # move dates closer to month and force the year to be correct
     for month in calendar.month_name[1:]:
         text = re.sub('{month}\s+'.format(month=month),
-                      month, text, flags=re.IGNORECASE)
+                     str(now.year) + " " + month, text, flags=re.IGNORECASE)
         text = re.sub(
-            '{month}\s+'.format(month=month[:3]), month, text, flags=re.IGNORECASE)
+            '{month}\s+'.format(month=month[:3]), str(now.year) + " " + month, text, flags=re.IGNORECASE)
 
     # crazy specific 10-4 pm edge case
     text = re.sub(r'(9|10|11|12)-([1-5])\s*(pm)',

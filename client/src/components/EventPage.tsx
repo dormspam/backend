@@ -122,28 +122,33 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
                   />
                 </InputGroup>
                 <InputGroup>
-                  <InputGroupAddon addonType="prepend">
-                    Start End Time
-                  </InputGroupAddon>
                   <DatePicker
                     selected={eventStart}
                     onChange={date => setEventStart(date)}
+                    selectsStart
                     showTimeSelect
-                    timeFormat="HH:mm"
+                    startDate={eventStart}
+                    endDate={eventEnd}
+                    timeFormat="h:mm aa"
                     timeIntervals={30}
                     timeCaption="time"
                     dateFormat="MMMM d, yyyy h:mm aa"
                     className="form-control"
+                    inline
                   />
                   <DatePicker
                     selected={eventEnd}
                     onChange={date => setEventEnd(date)}
                     showTimeSelect
-                    timeFormat="HH:mm"
+                    selectsEnd
+                    startDate={eventStart}
+                    endDate={eventEnd}
+                    timeFormat="h:mm aa"
                     timeIntervals={30}
                     timeCaption="time"
                     dateFormat="MMMM d, yyyy h:mm aa"
                     className="form-control"
+                    inline
                   />
                   {new Date().getTimezoneOffset() / 60 != 5 ? (
                     <span>
@@ -151,6 +156,10 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
                     </span>
                   ) : null}
                 </InputGroup>
+                <p>{event.alternate_dates.map(e => {
+                  return <Fragment key={e}>{new Date(e).toString()}<br /></Fragment>;
+                })}
+                </p>
                 <InputGroup>
                   <InputGroupAddon addonType="prepend">Link:</InputGroupAddon>
                   <Input

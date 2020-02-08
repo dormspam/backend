@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from server.controllers.events import *
-from server.emails.parse import parse_email
+from server.emails.parse import parse_email, new_parse_dates
 from server.api.v1 import return_failure, return_success, require_login
 from server.app import app
 from typing import cast
@@ -115,6 +115,11 @@ class GetEvent(Resource):
         event = get_event(data['eid'], None, override=True)
         if (event is None):
             return return_failure("could not find event")
+        dates = new_parse_dates(event.description)
+        if dates is None:
+            dates = new_parse_dates(event.description, False)
+        if dates is None:
+            dates = []
         return return_success({
-            'event': event.json()
+            'event': {**event.json(),'alternate_dates': [x.isoformat() + "Z" for x in dates]}
         })

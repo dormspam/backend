@@ -105,7 +105,7 @@ def parse_email(email_text):
     html_message = clean_and_update_html(find_html_txt(b).decode("utf-8", "ignore"), find_images(b))
     message_clean = remove_forwards(message_body.decode("utf-8", "ignore"))
 
-    remove_strings = ["Fwd: ", "Re: ", "[Castle-Talk]", "BAKER-FORUM: ", "Cc: ", "RE: ", "FW: ", "[TONIGHT] ", "[TOMORROW] ", "[HAPPENING NOW] ", "[ACTION REQUIRED] ",
+    remove_strings = ["[DORMSPAM] ", "Fwd: ", "Re: ", "[Castle-Talk]", "BAKER-FORUM: ", "Cc: ", "RE: ", "FW: ", "[TONIGHT] ", "[TOMORROW] ", "[HAPPENING NOW] ", "[ACTION REQUIRED] ",
                      "[TODAY] ", "Bump: ", "Action Required: ", "Reminder: ", " next week", " today",
                      " this week", " this Monday", " this Tuesday", " this Wednesday", " this Thursday",
                      " this Friday", " this Saturday", "this Sunday"]
@@ -120,7 +120,7 @@ def parse_email(email_text):
     location = parse_location(message_clean)
     # use precleaned data for date extraction
     dates = new_parse_dates(messy_title + "\n" + message_clean)
-    if not dates and ((etype & (1 << 5)) > 0):
+    if not dates:
         dates = new_parse_dates(messy_title + "\n" + message_clean,
                         time_required=False)
     urls = parse_urls(message_clean)

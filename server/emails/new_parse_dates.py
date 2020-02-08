@@ -207,46 +207,44 @@ def get_time(match, ampm_override=None):
     return (dt_hour, minute)
 
 
-def new_parse_dates(raw_text):
+def new_parse_dates(raw_text, time_required=True):
     print("...getting datetime")
     """ Extract full datetime object from text """
-    text = clean_chain(raw_text)
-    OFFSET = 40
+    try:
+        text = clean_chain(raw_text)
+        OFFSET = 40
 
-    send_datetime = datetime.now()
+        send_datetime = datetime.now()
+        abs_dates = sorted(abs_date_from_phrase(text), key=lambda x: x[2])
+        # sorted(rel_date_from_phrase(text, send_date), key=lambda x: x[1])
+        rel_dates = []
+        dates = abs_dates + rel_dates
+        for date in dates:
+            nearby_text = text[max(0, date[1] - OFFSET): date[2] + OFFSET]
+            # print(nearby_text)
+            startend = start_end_time_from_phrase(nearby_text)
+            if startend:
+                (start_hour, start_minute), (end_hour, end_minute) = startend
+                month, day = date[0]
+                year = send_datetime.year if send_datetime.month <= month else send_datetime.year + 1
+                start = utc(datetime(year, month, day, start_hour, start_minute))
+                end = utc(datetime(year, month, day, end_hour, end_minute))
+                return start, end
 
-    abs_dates = sorted(abs_date_from_phrase(text), key=lambda x: x[2])
-    # sorted(rel_date_from_phrase(text, send_date), key=lambda x: x[1])
-    rel_dates = []
-    dates = abs_dates + rel_dates
-    for date in dates:
-        nearby_text = text[max(0, date[1] - OFFSET): date[2] + OFFSET]
-        # print(nearby_text)
-        startend = start_end_time_from_phrase(nearby_text)
-        if startend:
-            (start_hour, start_minute), (end_hour, end_minute) = startend
-            month, day = date[0]
-            year = send_datetime.year if send_datetime.month <= month else send_datetime.year + 1
-            start = utc(datetime(year, month, day, start_hour, start_minute))
-            end = utc(datetime(year, month, day, end_hour, end_minute))
-            return start, end
-
-    for date in dates:
-        nearby_text = text[max(0, date[1] - OFFSET): date[2] + OFFSET]
-        start_time = time_from_phrase(nearby_text)
-        if start_time:
-            start_hour, start_minute = start_time
-            month, day = date[0]
-            year = send_datetime.year if send_datetime.month <= month else send_datetime.year + 1
-            start = utc(datetime(year, month, day, start_hour, start_minute))
-            return start, None
-
-    # raise ValueError('No datetime found.')
-
-    second_attempt = parse_dates(raw_text)
-    if second_attempt is None:
-        print("No Datetime Found")
-    return second_attempt
+        for date in dates:
+            nearby_text = text[max(0, date[1] - OFFSET): date[2] + OFFSET]
+            start_time = time_from_phrase(nearby_text)
+            if start_time:
+                start_hour, start_minute = start_time
+                month, day = date[0]
+                year = send_datetime.year if send_datetime.month <= month else send_datetime.year + 1
+                start = utc(datetime(year, month, day, start_hour, start_minute))
+                return start, None
+    finally:
+        second_attempt = parse_dates(raw_text, time_required)
+        if second_attempt is None:
+            print("No Datetime Found")
+        return second_attempt
 
 
 if __name__ == "__main__":
