@@ -13,6 +13,13 @@ import re
 #   EECS = 1 << 9,
 # }
 CATEGORIES = {
+    'OTHER': (1 << 1, [],
+             {
+        "name": "Other",
+        "id": "other",
+        "description": "Anything else",
+        "color": "#888888"
+    }),
     'FOOD': (1 << 2, ["cookie", "food", "eat", "study break", "boba", "bubble tea", "chicken", "bonchon", "bon chon", "bertucci",
                       "pizza", "sandwich", "leftover", "salad", "burrito", "dinner provided", "lunch provided", "breakfast provided",
                       "dinner included", "lunch included", "ramen", "kbbq", "dumplings", "waffles", "csc",
