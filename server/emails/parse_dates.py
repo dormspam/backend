@@ -7,9 +7,15 @@ from datetime import timedelta
 from dateutil import tz
 
 def expand_event_time(text):
+    text = text.encode('ascii', 'ignore').decode('ascii')
     # remmove pipelines
     text = re.sub(r'\|', "", text)
-    text = re.sub(r"[\*\.\,]", " .", text) # Remove stars and punctuation
+    text = re.sub(r"[\[\]\<\>\*\.\,]", " .", text) # Remove stars and punctuation
+
+    # Remove room numbers
+    text = re.sub(r"[A-Z0-9]+-[0-9][0-9][0-9]","", text)
+    text = re.sub(r"32-G[0-9][0-9][0-9]","", text)
+    text = re.sub(r"32-D[0-9][0-9][0-9]","", text)
 
     # Remove all greator than 3 numbers
     text = re.sub(r"[0-9]{3,}", "number", text)
@@ -43,6 +49,7 @@ def expand_event_time(text):
 
     # Add minutes
     text = re.sub(r'(10|11|12|[1-9])([ap]m)', r'\1:00\2', text, flags=re.I)
+    text = re.sub(r'\n', '.', text)
 
     return text
 

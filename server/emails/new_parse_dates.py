@@ -11,6 +11,7 @@ if __name__ == "__main__":
     from parse_dates import parse_dates
 else:
     from server.emails.parse_dates import parse_dates
+    # from parse_dates import parse_dates
 
 month_lookup = {
     'jan': 1,
@@ -243,7 +244,7 @@ def new_parse_dates(raw_text, time_required=True):
     finally:
         second_attempt = parse_dates(raw_text, time_required)
         if second_attempt is None:
-            print("No Datetime Found")
+            print("No Datetime Found", time_required)
         return second_attempt
 
 
