@@ -13,7 +13,7 @@ import re
 #   EECS = 1 << 9,
 # }
 CATEGORIES = {
-    'OTHER': (1 << 1, [],
+    'OTHER': (1, [],
              {
         "name": "Other",
         "id": "other",
