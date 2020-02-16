@@ -30,7 +30,7 @@ def get_events(search = None, only_future=False):
     return Event.query.filter_by(approved_is=True)
 
 def get_all_events():
-    return Event.query.all()
+    return Event.query.yield_per(10)
 
 def create_server_event(title, etype, description, time_start, message_html=None,
                                    location=None, time_end=None, link=None, headerInfo=None):

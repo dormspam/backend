@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime, Text
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import deferred
 from server.models import Base
 from server.emails.parse_type import CATEGORIES
 from server.helpers import *
@@ -23,8 +24,8 @@ class Event(Base):
     # Event characteristics
     title = Column(String)
     location = Column(String, default="")
-    description = Column(Text, default="")
-    description_html = Column(Text, default="")
+    description = deferred(Column(Text, default=""))
+    description_html = deferred(Column(Text, default=""))
 
     cta_link = Column(String)
     time_start = Column(DateTime)
@@ -65,17 +66,18 @@ class Event(Base):
     #   type: number;
     #   desc: string;
     # };
-    def json(self, fullJSON=True):
+    def json(self, fullJSON=2):
         additionalJSON = {}
-        if (fullJSON):
+        if (fullJSON == 2):
             additionalJSON = {
                 'desc': self.description,
                 'desc_html': self.description_html
             }
-        else:
+        elif (fullJSON == 1):
             additionalJSON = {
                 'desc': self.description[:100] + "..." if self.description else ""
             }
+
 
         return {
             'title': self.title,
