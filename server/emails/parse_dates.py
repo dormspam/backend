@@ -32,8 +32,11 @@ def expand_event_time(text):
 
     text = re.sub(r"(-?)NOON(-?)", r"\1 12 PM \2", text)
     # crazy specific 10-4 pm edge case
-    text = re.sub(r'(9|10|11|12)-([1-5])\s*(pm)',
+    text = re.sub(r'(9|10|11)-([1-5])\s*(pm)',
                   r'\1AM - \2\3', text, flags=re.IGNORECASE)
+    # 12 to blank
+    text = re.sub(r'(12)-([1-9])\s*(pm)',
+                  r'\1PM - \2\3', text, flags=re.IGNORECASE)
     # 1 to 3 pm
     text = re.sub(r'(10|11|12|[1-9])\s*(?:to)\s*(10|11|12|[1-9])\s*([ap][m])',
                   r'\1\3 - \2\3', text, flags=re.IGNORECASE)
@@ -52,7 +55,9 @@ def expand_event_time(text):
     # Add minutes
     text = re.sub(r'(10|11|12|[1-9])([ap]m)', r'\1:00\2', text, flags=re.I)
     text = re.sub(r'\n', '.', text)
-
+    text = text.upper()
+    # Remove all unnecessary numbers
+    text = re.sub(r'[0-9]{1,2}([^:AP0-9])', r'\1', text)
     return text
 
 
@@ -95,8 +100,9 @@ def parse_dates_possibilities(text):
     text = expand_event_time(text.upper())
     try:
         matches = search_dates(text, languages=['en'], settings={'TIMEZONE': 'US/Eastern', 'TO_TIMEZONE': 'UTC'})
-    except:
-        print("search dates errored out")
+    except Exception as e:
+        print("search dates errored out ===>")
+        print(e)
         matches = None
     return matches
 
