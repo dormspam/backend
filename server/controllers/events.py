@@ -18,6 +18,7 @@ def get_events_by_date(from_date):
             Event.time_start.between(from_date, to_date))
     return events
     
+
 def get_events(search = None, only_future=False):
     if search is not None:
         search = "%" + search + "%"

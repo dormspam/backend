@@ -16,7 +16,8 @@ def expand_event_time(text):
     text = re.sub(r"[A-Z0-9]+-[0-9][0-9][0-9]","", text)
     text = re.sub(r"32-G[0-9][0-9][0-9]","", text)
     text = re.sub(r"32-D[0-9][0-9][0-9]","", text)
-
+    text = re.sub(r"LOBBY (1[03]|7)","", text)
+    text = re.sub(r"YEARS?", "", text)
     # Remove all greator than 3 numbers
     text = re.sub(r"[0-9]{3,}", "number", text)
 
@@ -29,6 +30,7 @@ def expand_event_time(text):
         text = re.sub(
             '{month}\s+'.format(month=month[:3]), str(now.year) + " " + month, text, flags=re.IGNORECASE)
 
+    text = re.sub(r"(-?)NOON(-?)", r"\1 12 PM \2", text)
     # crazy specific 10-4 pm edge case
     text = re.sub(r'(9|10|11|12)-([1-5])\s*(pm)',
                   r'\1AM - \2\3', text, flags=re.IGNORECASE)
@@ -90,10 +92,12 @@ def parse_dates(text, time_required=True):
 
 
 def parse_dates_possibilities(text):
-    now = datetime.datetime.now()
     text = expand_event_time(text.upper())
-    text = text.replace("THIS", "THIS " + str(now.year), -1)
-    matches = search_dates(text, languages=['en'], settings={'TIMEZONE': 'US/Eastern', 'TO_TIMEZONE': 'UTC'})
+    try:
+        matches = search_dates(text, languages=['en'], settings={'TIMEZONE': 'US/Eastern', 'TO_TIMEZONE': 'UTC'})
+    except:
+        print("search dates errored out")
+        matches = None
     return matches
 
 if __name__ == "__main__":

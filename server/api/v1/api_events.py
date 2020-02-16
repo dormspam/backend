@@ -1,3 +1,4 @@
+from server.cache import should_cache_function
 from flask_restful import Resource, reqparse
 from server.controllers.events import *
 from server.emails.parse import parse_email, new_parse_dates
@@ -84,14 +85,21 @@ class ApproveEvent(Resource):
 GET_EVENTS = reqparse.RequestParser(bundle_errors=True)
 
 
+# Events should update every 5 mins
+@should_cache_function("api_events_get_events_convert", 5 * 60)
+def convert_to_json(events):
+    return {
+        'events': [e.json(fullJSON=0) for e in events]
+    }
+
+
 class GetEvents(Resource):
     # @require_login(GET_EVENTS)
     # def post(self, data, user):
     def post(self):
         events = get_events()
-        return return_success({
-            'events': [e.json(fullJSON=1) for e in events]
-        })
+        return return_success(convert_to_json(events))
+
 
 class GetAllEvents(Resource):
     @require_login(GET_EVENTS)
@@ -102,6 +110,7 @@ class GetAllEvents(Resource):
         return return_success({
             'events': [e.json(fullJSON=0) for e in events]
         })
+
 
 GET_EVENT = reqparse.RequestParser(bundle_errors=True)
 GET_EVENT.add_argument('eid',
@@ -121,5 +130,5 @@ class GetEvent(Resource):
         if dates is None:
             dates = []
         return return_success({
-            'event': {**event.json(),'alternate_dates': [x.isoformat() + "Z" for x in dates]}
+            'event': {**event.json(), 'alternate_dates': [x.isoformat() + "Z" for x in dates]}
         })
