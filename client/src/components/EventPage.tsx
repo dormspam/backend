@@ -103,6 +103,7 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
             <Button href={event.link}>Link: {event.link}</Button>
             <br />
             <div dangerouslySetInnerHTML={{__html: event.desc_html}} />
+            <code style={{ whiteSpace: "pre-wrap" }}>{event.desc}</code>
           </Card>
         </Col>
         <Col lg="12" xl="6">
