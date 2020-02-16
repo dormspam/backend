@@ -90,7 +90,7 @@ class GetEvents(Resource):
     def post(self):
         events = get_events()
         return return_success({
-            'events': [e.json() for e in events]
+            'events': [e.json(fullJSON=False) for e in events]
         })
 
 class GetAllEvents(Resource):

@@ -102,7 +102,7 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
             <p> Type: {getColorNames(event.type)} </p>
             <Button href={event.link}>Link: {event.link}</Button>
             <br />
-            <code style={{ whiteSpace: "pre-wrap" }}>{event.desc}</code>
+            <div dangerouslySetInnerHTML={{__html: event.desc_html}} />
           </Card>
         </Col>
         <Col lg="12" xl="6">

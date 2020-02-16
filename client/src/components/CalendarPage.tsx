@@ -33,7 +33,7 @@ enum SortType {
   PERFORMANCE = 1 << 6,
   BOBA = 1 << 7,
   TALKS = 1 << 8,
-  EECS = 1 << 9,
+  EECS = 1 << 9
 }
 const SortTypeValues = [
   { type: SortType.ALL, name: "All Events", color: null },
@@ -44,8 +44,8 @@ const SortTypeValues = [
   { type: SortType.APPLICATION, name: "Application Deadlines", color: "gold" },
   { type: SortType.PERFORMANCE, name: "Performance", color: "pink" },
   { type: SortType.BOBA, name: "Boba", color: "black" },
-  { type: SortType.TALKS, name: "Talks", color: "maroon"},
-  { type: SortType.EECS, name: "EECS-Jobs-Announce", color: "brown"}
+  { type: SortType.TALKS, name: "Talks", color: "maroon" },
+  { type: SortType.EECS, name: "EECS-Jobs-Announce", color: "brown" }
 ];
 
 type SortTypeObj = {
@@ -117,6 +117,8 @@ export type EventString = {
   desc: string;
 };
 export type Event = {
+  id: number;
+  eid: string;
   start: Date;
   end: Date;
   title: string;
@@ -174,7 +176,7 @@ const CalendarPage = () => {
         <Button>Edit Your Events</Button> TODO(kevinfang): add these options*/}
       </Container>
       <Row className="m-1">
-        <Col xl="6">
+        <Col xl="3">
           <Card body>
             <CardTitle>
               <h1>Events</h1>
@@ -215,16 +217,22 @@ const CalendarPage = () => {
                     {selectedEvent.start.toDateString()} @{" "}
                     {selectedEvent.start.toLocaleTimeString()}
                   </h4>
-                  <div dangerouslySetInnerHTML={{__html: selectedEvent.desc_html}} />
-                  <code style={{ whiteSpace: "pre-wrap" }}>
-                    {selectedEvent.desc}
-                  </code>
+                  <Button
+                    onClick={() => {
+                      window.open("/event/" + selectedEvent.eid, "_blank");
+                    }}
+                    color="primary"
+                  >
+                    Go to event
+                  </Button>
+                  <br />
+                  <code style={{ whiteSpace: "pre-wrap" }}>{selectedEvent.desc}</code>
                 </Card>
               ) : null}
             </CardTitle>
           </Card>
         </Col>
-        <Col xl="6">
+        <Col xl="9">
           <Calendar
             popup
             localizer={localizer}

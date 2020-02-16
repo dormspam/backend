@@ -24,6 +24,11 @@ const AdminPage = () => {
   const [searchValue, setSearchValue] = useState("");
   const columns = [
     {
+      Header: "id",
+      width: 80,
+      accessor: "id"
+    },
+    {
       Header: "Title",
       accessor: "title",
       Cell: (row: { original: { eid: string }; value: string }) => (
@@ -35,7 +40,9 @@ const AdminPage = () => {
       accessor: "start",
       width: 400,
       Cell: (row: { original: { id: string }; value: Date }) => (
-        <>{row.value.toDateString()} @{row.value.toLocaleTimeString()}</>
+        <>
+          {row.value.toDateString()} @{row.value.toLocaleTimeString()}
+        </>
       )
     },
     {
@@ -62,13 +69,15 @@ const AdminPage = () => {
     );
     if (res.success) {
       setEvents(
-        res.events.map((e: EventString) => {
-          return {
-            ...e,
-            start: new Date(e.start),
-            end: new Date(e.end)
-          };
-        })
+        res.events
+          .map((e: EventString) => {
+            return {
+              ...e,
+              start: new Date(e.start),
+              end: new Date(e.end)
+            };
+          })
+          .sort((a: Event, b: Event) => b.id - a.id)
       );
     } else {
       createAlert(

@@ -72,6 +72,10 @@ class Event(Base):
                 'desc': self.description,
                 'desc_html': self.description_html
             }
+        else:
+            additionalJSON = {
+                'desc': self.description[:100] + "..." if self.description else ""
+            }
 
         return {
             'title': self.title,
@@ -84,6 +88,7 @@ class Event(Base):
             'approved': self.approved_is,
             'published': self.published_is,
             'header': self.header,
+            'id': self.id,
             **additionalJSON
         }
 
