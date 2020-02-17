@@ -30,6 +30,11 @@ def expand_event_time(text):
         text = re.sub(
             '{month}\s+'.format(month=month[:3]), str(now.year) + " " + month, text, flags=re.IGNORECASE)
 
+    # Change dates
+    for i in range(12,0, -1):
+        month = re.compile("0?" + str(i) + '/([1-9]|(?:[0-3][0-9]))')
+        text = month.sub(calendar.month_name[i].upper() + r'\1', text)
+
     text = re.sub(r"(-?)NOON(-?)", r"\1 12 PM \2", text)
     # crazy specific 10-4 pm edge case
     text = re.sub(r'(9|10|11)-([1-5])\s*(pm)',
@@ -43,7 +48,6 @@ def expand_event_time(text):
     # 1-3 pm
     text = re.sub(r'((?:10|11|12|[1-9])(?:\:[0-9]{2})?)\s*-\s*((?:10|11|12|[1-9])(?:\:[0-9]{2})?)\s*([ap][m])',
                   r'\1\3 - \2\3', text, flags=re.IGNORECASE)
-
     # 1pm-2pm
     text = re.sub(r'((?:10|11|12|[1-9])(?:\:[0-9]{2})?)\s*([ap][m])\s*-\s*((?:10|11|12|[1-9])(?:\:[0-9]{2})?)\s*([ap][m])',
                   r'\1\2 - \3\4', text, flags=re.IGNORECASE)
@@ -56,6 +60,7 @@ def expand_event_time(text):
     text = re.sub(r'(10|11|12|[1-9])([ap]m)', r'\1:00\2', text, flags=re.I)
     text = re.sub(r'\n', '.', text)
     text = text.upper()
+    
     # Remove all unnecessary numbers
     text = re.sub(r'[0-9]{1,2}([^:AP0-9])', r'\1', text)
     return text
