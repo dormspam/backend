@@ -12,6 +12,13 @@ def expand_event_time(text):
     text = re.sub(r'\|', "", text)
     text = re.sub(r"[\[\]\<\>\*\.\,]", " .", text) # Remove stars and punctuation
 
+    # Change dates
+    for i in range(12,0, -1):
+        month = re.compile("0?" + str(i) + '/([1-9]|(?:[0-3][0-9]))/([0-9]{2,4})')
+        text = month.sub(calendar.month_name[i].upper() + r'\1', text)
+        month = re.compile("0?" + str(i) + '/([1-9]|(?:[0-3][0-9]))')
+        text = month.sub(calendar.month_name[i].upper() + r'\1', text)
+
     # Remove room numbers
     text = re.sub(r"[A-Z0-9]+-[0-9][0-9][0-9]","", text)
     text = re.sub(r"32-G[0-9][0-9][0-9]","", text)
@@ -29,11 +36,6 @@ def expand_event_time(text):
                      str(now.year) + " " + month, text, flags=re.IGNORECASE)
         text = re.sub(
             '{month}\s+'.format(month=month[:3]), str(now.year) + " " + month, text, flags=re.IGNORECASE)
-
-    # Change dates
-    for i in range(12,0, -1):
-        month = re.compile("0?" + str(i) + '/([1-9]|(?:[0-3][0-9]))')
-        text = month.sub(calendar.month_name[i].upper() + r'\1', text)
 
     text = re.sub(r"(-?)NOON(-?)", r"\1 12 PM \2", text)
     # crazy specific 10-4 pm edge case
@@ -62,7 +64,7 @@ def expand_event_time(text):
     text = text.upper()
     
     # Remove all unnecessary numbers
-    text = re.sub(r'[0-9]{1,2}([^:AP0-9])', r'\1', text)
+    # text = re.sub(r'[0-9]{1,2}([^:AP0-9])', r'\1', text)
     return text
 
 
@@ -115,5 +117,4 @@ if __name__ == "__main__":
     f = open("test_dates.txt", "r")
     for l in f.readlines():
         print(l.strip())
-        print(parse_dates_possibilities(l.strip()))
         print(parse_dates(l.strip()))
