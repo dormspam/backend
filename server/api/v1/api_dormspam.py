@@ -132,5 +132,9 @@ def get_events_frequency(date_string):
         for key in CATEGORIES:
             val, _, data = CATEGORIES[key]
             if event.etype & val > 0:
-                frequencies[event_key][data['name']] += 1
+                try:
+                    frequencies[event_key][data['name']] += 1
+                except:
+                    pass
+                    #TODO KeyError: '2020-02-29'
     return jsonify(frequencies)
