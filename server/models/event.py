@@ -37,7 +37,7 @@ class Event(Base):
     approved_is = Column(Boolean, default=False)
 
     # Parent events
-    parent_event_is = Column(Boolean)
+    parent_event_is = Column(Boolean, default=False)
     parent_event_id = Column(Integer, ForeignKey("events.id"))
     parent_event = relationship("Event", remote_side=[id])
 
@@ -90,6 +90,7 @@ class Event(Base):
             'approved': self.approved_is,
             'published': self.published_is,
             'header': self.header,
+            'parent_id': self.parent_event.eid if self.parent_event_is else '0',
             'id': self.id,
             **additionalJSON
         }

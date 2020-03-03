@@ -28,6 +28,8 @@ api.add_resource(HelloWorld, '')  # This would be the default hostname/api/v1
 api.add_resource(api_events.ServerCreateEvent, "/events/server/create")
 api.add_resource(api_events.PublishEvent, "/events/publish")
 api.add_resource(api_events.ApproveEvent, "/events/approve")
+api.add_resource(api_events.DuplicateEvent, "/events/duplicate")
+api.add_resource(api_events.DeleteEvent, "/events/delete")
 
 api.add_resource(api_events.GetEvents, "/events")
 api.add_resource(api_events.GetAllEvents, "/events/all")

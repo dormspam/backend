@@ -4,6 +4,12 @@ from server.app import db
 
 Base = db.Model
 
+def update_db():
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        
 def remove_from_db(objs):
     """Removes objects from database
     

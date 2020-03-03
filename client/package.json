@@ -29,6 +29,7 @@
     "react-cookie": "^4.0.1",
     "react-datepicker": "^2.10.1",
     "react-dom": "^16.8.6",
+    "react-moment": "^0.9.7",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-s-alert": "^1.4.1",

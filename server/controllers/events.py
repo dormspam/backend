@@ -17,7 +17,10 @@ def get_events_by_date(from_date):
     events = get_events().filter(
             Event.time_start.between(from_date, to_date))
     return events
-    
+
+def get_event_children(event):
+    events = Event.query.filter_by(parent_event_is=True, parent_event=event).all()
+    return events
 
 def get_events(search = None, only_future=False):
     if search is not None:
@@ -68,7 +71,7 @@ def create_server_event(title, etype, description, time_start, message_html=None
     return event
 
 
-def update_and_publish_event(eid, token, title, etype, description, time_start, time_end=None, link=None, user=None):
+def update_and_publish_event(eid, token, title, etype, description, time_start, time_end=None, link=None, user=None, location=None):
     event = get_event(eid, token, user=user)
     if (event is None):
         return False
@@ -76,6 +79,8 @@ def update_and_publish_event(eid, token, title, etype, description, time_start, 
     event.title = title
     event.etype = etype
     event.description = description
+    if location:
+        event.location = location
     event.time_start = time_start
     event.time_end = time_start + \
         timedelta(hours=1) if time_end is None else time_end

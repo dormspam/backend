@@ -5,6 +5,8 @@ export enum ServerURL {
   getEvent = "/api/v1/events/event",
   publishEvent = "/api/v1/events/publish",
   approveEvent = "/api/v1/events/approve",
+  deleteEvent = "/api/v1/events/delete",
+  duplicateEvent = "/api/v1/events/duplicate"
 }
 
 const ServerHelper = {

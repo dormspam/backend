@@ -125,11 +125,15 @@ export type Event = {
   type: number;
   desc: string;
   desc_html: string;
+  location: string;
   link: string;
   approved: string;
   published: string;
   header: string;
   alternate_dates: string[];
+  alternate_location: string[];
+  alternate_events: Event[];
+  parent_id: number;
 };
 
 const CalendarPage = () => {

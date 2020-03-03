@@ -2,7 +2,10 @@ from server.cache import should_cache_function
 from flask_restful import Resource, reqparse
 from server.controllers.events import *
 from server.emails.parse import parse_email, new_parse_dates
+from server.emails.parse_dates import parse_dates_possibilities
+from server.emails.parse_location import parse_all_locations
 from server.api.v1 import return_failure, return_success, require_login
+from server.models import update_db, remove_from_db
 from server.app import app
 from typing import cast
 
@@ -45,8 +48,47 @@ PUBLISH_EVENT.add_argument('description')
 PUBLISH_EVENT.add_argument('link')
 PUBLISH_EVENT.add_argument('start_date')
 PUBLISH_EVENT.add_argument('end_date')
+PUBLISH_EVENT.add_argument('location')
 PUBLISH_EVENT.add_argument('etype')
 
+DUPLICATE_EVENT = reqparse.RequestParser(bundle_errors=True)
+DUPLICATE_EVENT.add_argument('eid',
+                             help='Need eid',
+                             required=True)
+DUPLICATE_EVENT.add_argument('start_date')
+DUPLICATE_EVENT.add_argument('end_date')
+DUPLICATE_EVENT.add_argument('location')
+
+
+DELETE_EVENT = reqparse.RequestParser(bundle_errors=True)
+DELETE_EVENT.add_argument('eid',
+                             help='Need eid',
+                             required=True)
+class DeleteEvent(Resource):
+    @require_login(DELETE_EVENT)
+    def post(self, data, user):
+        event = get_event(data.eid, "", user=user)
+        if event:
+            remove_from_db([event])
+            return return_success({"message": "deleted event" + data.eid})
+        return return_failure("could not get event")
+
+class DuplicateEvent(Resource):
+    @require_login(DUPLICATE_EVENT)
+    def post(self, data, user):
+        event = get_event(data.eid, "", user=user)
+        if not event:
+            return return_failure("could not get event")
+        new_event = create_server_event(event.title, event.etype, event.description, data.start_date, message_html=event.description_html,
+                                        location=data.location, time_end=data.end_date, link=event.cta_link, headerInfo=event.header)
+        if new_event:
+            new_event.parent_event_is = True
+            new_event.parent_event = event
+            new_event.published_is = True
+            new_event.approved_is = True
+            update_db()
+            return return_success({"message": "published and waiting approval!"})
+        return return_failure("could not create event")
 
 class PublishEvent(Resource):
     @require_login(PUBLISH_EVENT)
@@ -60,7 +102,8 @@ class PublishEvent(Resource):
             data['start_date'],
             data['end_date'],
             data['link'],
-            user=user
+            user=user,
+            location=data['location']
         )):
             return return_success({"message": "published and waiting approval!"})
         return return_failure("something went wrong")
@@ -124,11 +167,14 @@ class GetEvent(Resource):
         event = get_event(data['eid'], None, override=True)
         if (event is None):
             return return_failure("could not find event")
-        dates = new_parse_dates(event.description)
-        if dates is None:
-            dates = new_parse_dates(event.description, False)
+        dates = parse_dates_possibilities(event.description)
         if dates is None:
             dates = []
         return return_success({
-            'event': {**event.json(), 'alternate_dates': [x.isoformat() + "Z" for x in dates]}
+            'event': {
+                **event.json(),
+                'alternate_dates': [(x[0], x[1].isoformat() + "Z") for x in dates],
+                'alternate_location': parse_all_locations(event.description),
+                'alternate_events': [e.json(fullJSON=0) for e in get_event_children(event)]
+            }
         })
