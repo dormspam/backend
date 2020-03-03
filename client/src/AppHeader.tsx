@@ -38,7 +38,7 @@ const AppHeader: React.FC = () => {
   return (
     <div>
       <Navbar color="light" light expand="md">
-        <NavbarBrand href="/">MIT Campus Events (to.mit.edu/events)</NavbarBrand>
+        <NavbarBrand href="/admin">MIT Campus Events (to.mit.edu/events)</NavbarBrand>
         <NavbarToggler onClick={() => setIsOpen(open => !open)} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
