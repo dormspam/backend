@@ -133,6 +133,7 @@ export type Event = {
   alternate_dates: string[];
   alternate_location: string[];
   alternate_events: Event[];
+  same_day_events: Event[];
   parent_id: number;
 };
 

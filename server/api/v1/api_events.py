@@ -6,6 +6,7 @@ from server.emails.parse_dates import parse_dates_possibilities
 from server.emails.parse_location import parse_all_locations
 from server.api.v1 import return_failure, return_success, require_login
 from server.models import update_db, remove_from_db
+from datetime import timedelta, datetime
 from server.app import app
 from typing import cast
 
@@ -64,6 +65,8 @@ DELETE_EVENT = reqparse.RequestParser(bundle_errors=True)
 DELETE_EVENT.add_argument('eid',
                              help='Need eid',
                              required=True)
+
+
 class DeleteEvent(Resource):
     @require_login(DELETE_EVENT)
     def post(self, data, user):
@@ -72,6 +75,7 @@ class DeleteEvent(Resource):
             remove_from_db([event])
             return return_success({"message": "deleted event" + data.eid})
         return return_failure("could not get event")
+
 
 class DuplicateEvent(Resource):
     @require_login(DUPLICATE_EVENT)
@@ -89,6 +93,7 @@ class DuplicateEvent(Resource):
             update_db()
             return return_success({"message": "published and waiting approval!"})
         return return_failure("could not create event")
+
 
 class PublishEvent(Resource):
     @require_login(PUBLISH_EVENT)
@@ -170,11 +175,24 @@ class GetEvent(Resource):
         dates = parse_dates_possibilities(event.description)
         if dates is None:
             dates = []
+        same_day_events = []
+        seen_eids = set()
+        seen_eids.add(event.eid)
+        for e in get_events_by_date(event.time_start - timedelta(days=1)):
+            if e.eid not in seen_eids:
+                same_day_events.append(e.json(fullJSON=0))
+                seen_eids.add(e.eid)
+        for e in get_events_by_date(event.time_start):
+            if e.eid not in seen_eids:
+                same_day_events.append(e.json(fullJSON=0))
+                seen_eids.add(e.eid)
+
         return return_success({
             'event': {
                 **event.json(),
                 'alternate_dates': [(x[0], x[1].isoformat() + "Z") for x in dates],
                 'alternate_location': parse_all_locations(event.description),
-                'alternate_events': [e.json(fullJSON=0) for e in get_event_children(event)]
+                'alternate_events': [e.json(fullJSON=0) for e in get_event_children(event)],
+                'same_day_events': same_day_events
             }
         })

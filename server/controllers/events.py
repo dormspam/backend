@@ -12,20 +12,25 @@ def get_event(eid, token, override=False, user=None):
         return None
     return event
 
+
 def get_events_by_date(from_date):
     to_date = from_date + timedelta(days=1)
     events = get_events().filter(
-            Event.time_start.between(from_date, to_date))
+        Event.time_start.between(from_date, to_date))
     return events
+
 
 def get_event_children(event):
-    events = Event.query.filter_by(parent_event_is=True, parent_event=event).all()
+    events = Event.query.filter_by(
+        parent_event_is=True, parent_event=event).all()
     return events
 
-def get_events(search = None, only_future=False):
+
+def get_events(search=None, only_future=False):
     if search is not None:
         search = "%" + search + "%"
-        q = Event.query.filter_by(approved_is=True).filter(Event.description.ilike(search)).order_by(Event.time_start.asc())
+        q = Event.query.filter_by(approved_is=True).filter(
+            Event.description.ilike(search)).order_by(Event.time_start.asc())
         if only_future:
             # TODO(kevinfang) ugly
             today = str(datetime.now()).split(" ")[0]
@@ -33,11 +38,13 @@ def get_events(search = None, only_future=False):
         return q
     return Event.query.filter_by(approved_is=True)
 
+
 def get_all_events():
     return Event.query.yield_per(10)
 
+
 def create_server_event(title, etype, description, time_start, message_html=None,
-                                   location=None, time_end=None, link=None, headerInfo=None):
+                        location=None, time_end=None, link=None, headerInfo=None):
     event = Event(None)
     event.header = headerInfo
     event.title = title
@@ -50,8 +57,8 @@ def create_server_event(title, etype, description, time_start, message_html=None
         event.time_end = datetime.now()
     else:
         event.time_start = time_start
-        event.time_end = (time_start + \
-            timedelta(hours=1)) if time_end is None else time_end
+        event.time_end = (time_start +
+                          timedelta(hours=1)) if time_end is None else time_end
     event.cta_link = link
 
     retry = 10

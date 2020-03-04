@@ -11,7 +11,8 @@ import {
   Badge,
   CardBody,
   Label,
-  FormGroup
+  FormGroup,
+  Form
 } from "reactstrap";
 import useLogin from "../hooks/useLogin";
 import ServerHelper, { ServerURL } from "./ServerHelper";
@@ -104,11 +105,20 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
         <Col lg="12" xl="6">
           <Card body>
             <h3>{event.title}</h3>
+            <p>
+              This email was sent by: {event.header.split("|")[0]} on{" "}
+              {moment(new Date(event.header.split("|")[1])).format(
+                "MMMM D, YYYY h:mmA"
+              )}
+            </p>
             <h5>
               {event.start.toDateString()} @ {event.start.toLocaleTimeString()}
             </h5>
             <p> Type: {getColorNames(event.type)} </p>
-            <Button href={event.link}>Link: {event.link}</Button>
+            <br />
+            <Button outline href={event.link}>
+              Link: {event.link}
+            </Button>
             <br />
             <div dangerouslySetInnerHTML={{ __html: event.desc_html }} />
             <code style={{ whiteSpace: "pre-wrap" }}>{event.desc}</code>
@@ -127,17 +137,11 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
                     </Button>
                   ) : null}
                 </h2>
-                <p>
-                  This email was sent by: {event.header.split("|")[0]} on{" "}
-                  {moment(new Date(event.header.split("|")[1])).format(
-                    "MMMM D, YYYY h:mmA"
-                  )}
-                </p>
                 <Row>
                   <Col>
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
-                        Event Title:
+                        Title:
                       </InputGroupAddon>
                       <Input
                         value={eventTitle}
@@ -195,61 +199,83 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
                         onChange={e => setEventRoom(e.target.value)}
                       />
                     </InputGroup>
-                  </Col>
-                  <Col>
-                    <Button
-                      color="primary"
-                      size="lg"
-                      onClick={async () => {
-                        const res = await ServerHelper.post(
-                          ServerURL.publishEvent,
-                          {
-                            ...getCredentials(),
-                            eid: props.match.params.eid,
-                            etoken: etoken || "",
-                            title: eventTitle,
-                            description: eventDesc,
-                            etype: "" + eventType,
-                            link: eventLink,
-                            location: eventRoom,
-                            start_date: eventStart && eventStart.toISOString(),
-                            end_date: eventEnd && eventEnd.toISOString()
-                          }
-                        );
-                        if (res.success) {
-                          getEvent();
-                          createAlert(AlertType.Success, "Published!");
-                        } else {
-                          createAlert(AlertType.Error, "Could not publish");
-                        }
-                      }}
-                    >
-                      {event.published ? "Update Event" : "Confirm Event"}
-                    </Button>
-                    <br />
-                    {viewer(Query.admin) === "true" ? (
+                    <div className="m-2">
                       <Button
-                        size="lg"
+                        className="mx-1"
+                        color="primary"
                         onClick={async () => {
                           const res = await ServerHelper.post(
-                            ServerURL.approveEvent,
+                            ServerURL.publishEvent,
                             {
                               ...getCredentials(),
-                              eid: props.match.params.eid
+                              eid: props.match.params.eid,
+                              etoken: etoken || "",
+                              title: eventTitle,
+                              description: eventDesc,
+                              etype: "" + eventType,
+                              link: eventLink,
+                              location: eventRoom,
+                              start_date:
+                                eventStart && eventStart.toISOString(),
+                              end_date: eventEnd && eventEnd.toISOString()
                             }
                           );
                           if (res.success) {
                             getEvent();
-                            createAlert(AlertType.Success, "Toggled Approval");
+                            createAlert(AlertType.Success, "Published!");
                           } else {
-                            createAlert(AlertType.Error, "Could not approve");
+                            createAlert(AlertType.Error, "Could not publish");
                           }
                         }}
-                        color={event.approved ? "success" : "primary"}
                       >
-                        (Admin) {event.approved ? "Unapprove" : "Approve"}
+                        {event.published ? "Update Event" : "Confirm Event"}
                       </Button>
-                    ) : null}
+                      {viewer(Query.admin) === "true" ? (
+                        <Button
+                          className="mx-1"
+                          onClick={async () => {
+                            const res = await ServerHelper.post(
+                              ServerURL.approveEvent,
+                              {
+                                ...getCredentials(),
+                                eid: props.match.params.eid
+                              }
+                            );
+                            if (res.success) {
+                              getEvent();
+                              createAlert(
+                                AlertType.Success,
+                                "Toggled Approval"
+                              );
+                            } else {
+                              createAlert(AlertType.Error, "Could not approve");
+                            }
+                          }}
+                          color={event.approved ? "success" : "primary"}
+                        >
+                          (Admin) {event.approved ? "Unapprove" : "Approve"}
+                        </Button>
+                      ) : null}
+                    </div>
+                  </Col>
+                  <Col>
+                    <p>Other APPROVED events on this day:</p>
+                    {event.same_day_events.map((e, i) => {
+                      return (
+                        <Fragment key={e.start.toString() + " dm" + i}>
+                          <Button
+                            href={"/event/" + e.eid}
+                            outline
+                            color="info"
+                            size="sm"
+                          >
+                            {e.title}
+                            <br />
+                            {moment(e.start).format("M/D/YY h:mmA")}
+                          </Button>
+                        </Fragment>
+                      );
+                    })}
                   </Col>
                 </Row>
               </>
@@ -260,11 +286,11 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
             {viewer(Query.admin) === "true" && event.parent_id == 0 ? (
               <Fragment>
                 Duplicated Events:
-                <Row>
+                <Row className="m-3">
                   {event.alternate_events.map((e, i) => {
                     return (
                       <Fragment key={e.start.toString() + " dd" + i}>
-                        <Button href={"/event/" + e.eid} color="info">
+                        <Button href={"/event/" + e.eid} color="info" outline>
                           {moment(e.start).format("M/D/YY h:mmA")} to{" "}
                           {moment(e.end).format("h:mmA")} @ {e.location}
                         </Button>
@@ -273,64 +299,87 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
                   })}
                 </Row>
                 <br />
-                <Button
-                  onClick={async () => {
-                    if (window.confirm("Are you sure?")) {
-                      const res = await ServerHelper.post(
-                        ServerURL.duplicateEvent,
-                        {
-                          ...getCredentials(),
-                          eid: props.match.params.eid,
-                          location: eventDupLocation,
-                          start_date:
-                            eventDupStart && eventDupStart.toISOString(),
-                          end_date: eventDupEnd && eventDupEnd.toISOString()
-                        }
-                      );
-                      if (res.success) {
-                        getEvent();
-                        createAlert(AlertType.Success, "Duplicated Event");
-                      } else {
-                        createAlert(AlertType.Error, "Could not duplicate");
-                      }
-                    }
-                  }}
-                >
-                  Dup
-                </Button>
                 <p>
                   start:{" "}
                   <b>{moment(eventDupStart).format("dddd M/D/YY h:mmA")}</b> to{" "}
                   <b>{moment(eventDupEnd).format("dddd M/D/YY h:mmA")}</b> @{" "}
                   <b>{eventDupLocation.toString()}</b> <br />
-                  <DatePicker
-                    selected={eventDupStart}
-                    onChange={date =>
-                      setEventDupStart(date ? date : eventDupStart)
-                    }
-                    selectsStart
-                    showTimeSelect
-                    startDate={eventDupStart}
-                    endDate={eventDupEnd}
-                    timeFormat="h:mm aa"
-                    timeIntervals={30}
-                    timeCaption="time"
-                    dateFormat="M/d/yy h:mm aa"
-                    className="form-control"
-                  />
-                  <DatePicker
-                    selected={eventDupEnd}
-                    onChange={date => setEventDupEnd(date ? date : eventDupEnd)}
-                    showTimeSelect
-                    selectsEnd
-                    startDate={eventDupStart}
-                    endDate={eventDupEnd}
-                    timeFormat="h:mm aa"
-                    timeIntervals={30}
-                    timeCaption="time"
-                    dateFormat="M/d/yy h:mm aa"
-                    className="form-control"
-                  />
+                  <Row>
+                    <Col>
+                      <DatePicker
+                        selected={eventDupStart}
+                        onChange={date =>
+                          setEventDupStart(date ? date : eventDupStart)
+                        }
+                        selectsStart
+                        showTimeSelect
+                        startDate={eventDupStart}
+                        endDate={eventDupEnd}
+                        timeFormat="h:mm aa"
+                        timeIntervals={30}
+                        timeCaption="time"
+                        dateFormat="M/d/yy h:mm aa"
+                        className="form-control"
+                      />
+                    </Col>
+                    <Col>
+                      <DatePicker
+                        selected={eventDupEnd}
+                        onChange={date =>
+                          setEventDupEnd(date ? date : eventDupEnd)
+                        }
+                        showTimeSelect
+                        selectsEnd
+                        startDate={eventDupStart}
+                        endDate={eventDupEnd}
+                        timeFormat="h:mm aa"
+                        timeIntervals={30}
+                        timeCaption="time"
+                        dateFormat="M/d/yy h:mm aa"
+                        className="form-control"
+                      />
+                    </Col>
+                    <Col>
+                      <Input
+                        value={eventDupLocation}
+                        onChange={e => setEventDupLocation(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Button
+                        onClick={async () => {
+                          if (window.confirm("Are you sure?")) {
+                            const res = await ServerHelper.post(
+                              ServerURL.duplicateEvent,
+                              {
+                                ...getCredentials(),
+                                eid: props.match.params.eid,
+                                location: eventDupLocation,
+                                start_date:
+                                  eventDupStart && eventDupStart.toISOString(),
+                                end_date:
+                                  eventDupEnd && eventDupEnd.toISOString()
+                              }
+                            );
+                            if (res.success) {
+                              getEvent();
+                              createAlert(
+                                AlertType.Success,
+                                "Duplicated Event"
+                              );
+                            } else {
+                              createAlert(
+                                AlertType.Error,
+                                "Could not duplicate"
+                              );
+                            }
+                          }
+                        }}
+                      >
+                        Duplicate Event
+                      </Button>
+                    </Col>
+                  </Row>
                 </p>
                 <Row className="m-2">
                   <Col>
