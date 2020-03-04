@@ -161,6 +161,8 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
                         timeCaption="time"
                         dateFormat="M/d/yy h:mm aa"
                         className="form-control"
+                        todayButton="Select Today"
+                        withPortal
                       />
                       <DatePicker
                         selected={eventEnd}
@@ -174,6 +176,8 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
                         timeCaption="time"
                         dateFormat="M/d/yy h:mm aa"
                         className="form-control"
+                        todayButton="Select Today"
+                        withPortal
                       />
                       {new Date().getTimezoneOffset() / 60 != 5 ? (
                         <span>
@@ -261,11 +265,20 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
                   <Col>
                     <p>Other APPROVED events on this day:</p>
                     {event.same_day_events.map((e, i) => {
+                      // Let's compare the titles
+                      const title = e.title.split(" ");
+                      const master_title = event.title.split(" ");
+                      var is_similar = false;
+                      master_title.forEach(word => {
+                        if (title.includes(word)) {
+                          is_similar = true;
+                        }
+                      });
                       return (
                         <Fragment key={e.start.toString() + " dm" + i}>
                           <Button
                             href={"/event/" + e.eid}
-                            outline
+                            outline={!is_similar}
                             color="info"
                             size="sm"
                           >
@@ -320,6 +333,7 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
                         timeCaption="time"
                         dateFormat="M/d/yy h:mm aa"
                         className="form-control"
+                        todayButton="Select Today"
                       />
                     </Col>
                     <Col>
@@ -337,6 +351,7 @@ const EventPage = (props: RouteComponentProps<Callback>) => {
                         timeCaption="time"
                         dateFormat="M/d/yy h:mm aa"
                         className="form-control"
+                        todayButton="Select Today"
                       />
                     </Col>
                     <Col>
